@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@400;500;700;800&family=Source+Sans+Pro&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Quicksand", sans-serif !important;
+  line-height: 1 !important;
+  font-size: 16px !important;
+  color: #272727 !important;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-track {
+  margin: 3px 0;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 2px solid transparent;
+
+  background-clip: content-box;
+  background-color: #909090;
+  background-clip: content-box;
+}
+
+.ant-drawer-body .user-mobile .avatar-mobile {
+  width: 100%;
+  padding-bottom: 15px;
+  cursor: pointer;
+}
+.ant-drawer-body .user-mobile .btn-login {
+  margin-bottom: 15px;
+}
+.ant-drawer-body ul {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 15px 0;
+  list-style: none;
+  border-top: 2px solid rgba(0, 0, 0, 0.4);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+}
+.ant-drawer-body ul li span {
+  display: block;
+  text-decoration: none;
+  font-size: 15px;
+  color: #000;
+  cursor: pointer;
+  font-weight: 600;
+}
