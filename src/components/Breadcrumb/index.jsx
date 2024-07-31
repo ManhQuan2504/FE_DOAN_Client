@@ -7,9 +7,9 @@ import history from "../../utils/history";
 function BreadcrumbUI() {
   const breadcrumbNameMap = {
     "/product": "Tất cả sản phẩm",
-    "/product/men": "Giày nam",
-    "/product/woman": "Giày nữ",
-    "/product/kids": "Giày trẻ em",
+    "/product/men": "Điều hoà",
+    "/product/woman": "Tủ lạnh",
+    "/product/kids": "Máy giặt",
     "/blog": "Bài viết",
     "/contact": "Liên hệ",
     "/cart": "Giỏ hàng",

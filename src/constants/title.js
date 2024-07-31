@@ -1,7 +1,7 @@
 export const TITLE = {
   LOGIN: "Đăng nhập",
   REGISTER: "Đăng ký",
-  HOME: "Runner Inn | Trang chủ",
+  HOME: "LANCHISHOP | Trang chủ",
   PRODUCT_LIST: "Danh sách sản phẩm",
   PRODUCT_MEN: "Danh sách giày nam",
   PRODUCT_WOMEN: "Danh sách giày nữ",

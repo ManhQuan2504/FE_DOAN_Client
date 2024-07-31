@@ -227,11 +227,11 @@ function ProductPage() {
               history.location.pathname === "/product"
                 ? "Tất cả sản phẩm"
                 : history.location.pathname === "/product/men"
-                ? "Giày nam"
+                ? "Điều hoà"
                 : history.location.pathname === "/product/woman"
-                ? "Giày nữ"
+                ? "Tủ lạnh"
                 : history.location.pathname === "/product/kids"
-                ? "Giày trẻ em"
+                ? "Máy giặt"
                 : null
             }
           />

@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 
-import gallery1 from "../../../../../assets/images/gallery1.png";
-import gallery2 from "../../../../../assets/images/gallery2.jpg";
+import gallery1 from "../../../../../assets/images/gallery1.jfif";
+import gallery2 from "../../../../../assets/images/gallery2.jfif";
 import gallery3 from "../../../../../assets/images/gallery3.jpg";
 import gallery4 from "../../../../../assets/images/gallery4.jpg";
-import gallery5 from "../../../../../assets/images/gallery5.jpg";
-import gallery6 from "../../../../../assets/images/gallery6.jpg";
+import gallery5 from "../../../../../assets/images/gallery5.jfif";
+import gallery6 from "../../../../../assets/images/gallery6.jfif";
 
 import * as Style from "./style";
 

@@ -11,8 +11,8 @@ function ContactPage() {
       <Hero title="Liên hệ" />
       <Container>
         <Style.ContactContent>
-          <h2>Runner Inn</h2>
-          <p>Website bán giày trực tuyến</p>
+          <h2>LANCHISHOP</h2>
+          <p>Website bán đồ điện gia dụng</p>
         </Style.ContactContent>
       </Container>
     </Style.Contact>

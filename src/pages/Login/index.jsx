@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Form, Input, Button, Checkbox } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import loginImage from "../../assets/images/login-wallpaper.jpeg";
+import loginImage from "../../assets/images/login-wallpaper.png";
 
 import { loginAction } from "../../redux/actions";
 

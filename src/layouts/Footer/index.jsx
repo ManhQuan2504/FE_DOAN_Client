@@ -9,8 +9,7 @@ function Footer() {
         <Style.FooterItem>
           <Style.FooterTitle>GIỚI THIỆU</Style.FooterTitle>
           <p className="footer-desc">
-            Runner Inn trang mua sắm trực tuyến của thương hiệu giày, thời trang
-            nam, nữ, phụ kiện, giúp bạn tiếp cận xu hướng thời trang mới nhất.
+            LANCHISHOP trang mua sắm trực tuyến của thương hiệu đồ điện gia dụng hiện đại, mẫu mã mới nhất.
           </p>
           <a
             rel="noopener noreferrer"
@@ -73,7 +72,7 @@ function Footer() {
           <ul className="footer-list">
             <li className="footer-item">
               <span className="footer-line">Địa chỉ: </span>
-              88 Nguyễn Văn Linh, Nam Dương, Hải Châu, Đà Nẵng
+              Khối 2A, QL3, Đông Anh, Hà Nội
             </li>
             <li className="footer-item">
               <span className="footer-line">Điện thoại:</span> 1900.636.099
@@ -83,7 +82,7 @@ function Footer() {
             </li>
             <li className="footer-item">
               <span className="footer-line">Hộp thư:</span>{" "}
-              quocvuongta1023@gmail.com
+              dmq2504@gmail.com
             </li>
           </ul>
         </Style.FooterItem>
@@ -103,13 +102,13 @@ function Footer() {
         </Style.FooterItem>
       </Style.FooterContainer>
       <Style.CopyRight>
-        <span>Copyright © 2021 Runner Inn. </span>
+        <span>Copyright © 2024 LANCHISHOP. </span>
         <a
           rel="noopener noreferrer"
-          href="https://github.com/DuongVuongUTE"
+          href="https://github.com/"
           target="_blank"
         >
-          Lập trình bởi Dương Vương
+          Design by ManhQuan
         </a>
       </Style.CopyRight>
     </Style.Footer>

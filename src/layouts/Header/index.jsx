@@ -103,15 +103,15 @@ function Header({ type }) {
       path: "/product",
     },
     {
-      title: "Nam",
+      title: "Điều hoà",
       path: "/product/men",
     },
     {
-      title: "Nữ",
+      title: "Tủ lạnh",
       path: "/product/woman",
     },
     {
-      title: "Trẻ em",
+      title: "Máy giặt",
       path: "/product/kids",
     },
     // {
@@ -157,7 +157,7 @@ function Header({ type }) {
             />
           </div>
           <Drawer
-            title="Runner Inn"
+            title="LANCHISHOP"
             placement="right"
             closable={false}
             onClose={onClose}

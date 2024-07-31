@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 
-import categoryMen from "../../../../../assets/images/categorymen.jpeg";
-import categoryWomen from "../../../../../assets/images/categorywoman.jpeg";
-import categoryKids from "../../../../../assets/images/categorykids.jpg";
+import categoryDieuhoa from "../../../../../assets/images/categoryDieuhoa.jpg";
+import categoryTulanh from "../../../../../assets/images/categoryTulanh.jpg";
+import categoryMaygiat from "../../../../../assets/images/categoryMaygiat.png";
 
 import history from "../../../../../utils/history";
 
@@ -11,21 +11,21 @@ import * as Style from "./style";
 function CategoryHome() {
   const categoryList = [
     {
-      image: categoryMen,
+      image: categoryDieuhoa,
       tag: "Bộ sưu tập",
-      category: "Giày nam",
+      category: "Điều hoà",
       path: "/product/men",
     },
     {
-      image: categoryWomen,
+      image: categoryTulanh,
       tag: "Bộ sưu tập",
-      category: "Giày nữ",
+      category: "Tủ lạnh",
       path: "/product/woman",
     },
     {
-      image: categoryKids,
+      image: categoryMaygiat,
       tag: "Bộ sưu tập",
-      category: "Giày trẻ em",
+      category: "Máy giặt",
       path: "/product/kids",
     },
   ];

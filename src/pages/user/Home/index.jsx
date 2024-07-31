@@ -35,17 +35,17 @@ function HomePage() {
 
   const shoesMenList = {
     data: productList.data?.filter(
-      (productItem) => productItem?.department?.name === "Nam"
+      (productItem) => productItem?.department?.name === "Máy giặt"
     ),
   };
   const shoesWomenList = {
     data: productList.data?.filter(
-      (productItem) => productItem?.department?.name === "Nữ"
+      (productItem) => productItem?.department?.name === "Tủ lạnh"
     ),
   };
   const shoesKidsList = {
     data: productList.data?.filter(
-      (productItem) => productItem?.department?.name === "Trẻ em"
+      (productItem) => productItem?.department?.name === "Điều hoà"
     ),
   };
 
@@ -71,7 +71,7 @@ function HomePage() {
           <RegisterForm
             bg={register}
             title="Đăng ký"
-            text=" Đăng ký nhận bản tin của Runner Inn để cập nhật những sản phẩm mới, nhận thông tin ưu đãi đặc biệt và thông tin giảm giá khác."
+            text=" Đăng ký nhận bản tin của LanChiShop để cập nhật những sản phẩm mới, nhận thông tin ưu đãi đặc biệt và thông tin giảm giá khác."
           />
           {/* Giày nữ */}
           <SectionHome title="Tủ lạnh" text="xem thêm" params="/product/woman">
@@ -92,7 +92,7 @@ function HomePage() {
 
           {/* list ảnh giới thiệu */}
           <SectionHome
-            title="Khách hàng và Runner Inn"
+            title="Khách hàng và LanChiShop"
             text=""
             noContainer={true}
           >

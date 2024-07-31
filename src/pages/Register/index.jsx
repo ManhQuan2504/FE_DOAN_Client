@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import * as Style from "./style";
 import { registerAction } from "../../redux/actions";
-import registerImage from "../../assets/images/register-wallpaper.jpeg";
+import registerImage from "../../assets/images/register-wallpaper.jpg";
 import history from "../../utils/history";
 function RegisterPage() {
   const { responseAction } = useSelector((state) => state.userReducer);
@@ -51,7 +51,7 @@ function RegisterPage() {
       <Style.LoginPage>
         <div className="login-form">
           <div className="login-title">
-            <h1 onClick={() => history.push("/")}>Runner Inn</h1>
+            <h1 onClick={() => history.push("/")}>LANCHISHOP</h1>
             <h2>Đăng ký</h2>
           </div>
           <Form
