@@ -380,14 +380,14 @@ function ProductInfo({
   }
   console.log("🚀 ~ cartList:", cartList)
 
-  let maxCount = cartList.data.find(
+  let maxCount = cartList?.data.find(
     (cartitem) => cartitem.productId === parseInt(productID)
   )
     ? productDetail.data.quantity -
     cartList.data.find(
       (cartitem) => cartitem.productId === parseInt(productID)
     ).count
-    : productDetail.data.quantity;
+    : productDetail?.data?.quantity;
   return (
     <Style.ProductInfo>
       <Style.MainInfo>
@@ -396,12 +396,12 @@ function ProductInfo({
             <div className="image-group">
               <Image.PreviewGroup>
                 <Swiper onSwiper={setSwiper}>
-                  {productDetail.data?.images?.map((image) => {
+                  {productDetail?.data?.images?.map((image) => {
                     return (
                       <SwiperSlide className="slide-item">
                         <Image
                           className="slide-image"
-                          src={image}
+                          src={image.absoluteUrl}
                           placeholder={<div className="bg-animate" />}
                         />
                       </SwiperSlide>
@@ -421,7 +421,7 @@ function ProductInfo({
                       <Image
                         onClick={() => slideTo(index)}
                         preview={false}
-                        src={image}
+                        src={image.absoluteUrl}
                         placeholder={<div className="bg-animate" />}
                       />
                     </SwiperSlide>
@@ -432,64 +432,57 @@ function ProductInfo({
           </Col>
           <Col xl={{ span: 12 }} lg={{ span: 12 }} sm={{ span: 24 }}>
             <div className="product-content">
-              <h3>{` ${productDetail.data.name}`}</h3>
+              <h3>{` ${productDetail?.data?.productName}`}</h3>
               <div className="product-rate">
                 <Rate
                   className="rate"
                   disabled
                   allowHalf
-                  value={commentList.rate}
+                  value={commentList?.rate}
                 />
                 <span className="number-rate">
-                  {commentList.data?.length} Khách hàng đánh giá
+                  {commentList?.data?.length} Khách hàng đánh giá
                 </span>
               </div>
               <div className="product-price">
                 <strong>
-                  {optionSelected.price?.toLocaleString() ||
-                    productDetail.data.price?.toLocaleString() ||
+                  {optionSelected?.price?.toLocaleString() ||
+                    productDetail?.data?.price?.toLocaleString() ||
                     0}
                   ₫
                 </strong>
               </div>
               <div className="product-info-list">
                 <div className="product-brand-item">
-                  <span className="product-info-tag">Thương hiệu:</span>
+                  <span className="product-info-tag">Danh mục:</span>
                   <span className="product-info-text">
-                    <Space align="center">
-                      <img
-                        src={productDetail.data.category?.logo}
-                        height="30px"
-                        alt=""
-                      />
-                      <span>{` ${productDetail.data.category?.name}`}</span>
-                    </Space>
+                    <span>{`${productDetail?.data?.category?.categoryName}`}</span>
                   </span>
                 </div>
                 <div className="product-type-item">
-                  <span className="product-info-tag">Loại giày:</span>
-                  <span className="product-info-text">{` ${productDetail.data.type?.name}`}</span>
+                  <span className="product-info-tag">Thương hiệu:</span>
+                  <span className="product-info-text">{` ${productDetail?.data?.brand?.categoryName}`}</span>
                 </div>
               </div>
               <div className="product-info-list">
                 <div className="product-type-item">
                   <span className="product-info-tag">Sản phẩm dành cho:</span>
-                  <span className="product-info-text">{` ${productDetail.data.department?.name}`}</span>
+                  <span className="product-info-text">{` ${productDetail?.data?.department?.name}`}</span>
                 </div>
                 <div className="product-type-item">
                   <span className="product-info-tag">Số lượng sản phẩm:</span>
                   <span className="product-info-text">
-                    {productDetail.data.quantity === 0
+                    {productDetail?.data?.quantity === 0
                       ? "đã hết"
-                      : ` ${productDetail.data.quantity}`}
+                      : ` ${productDetail?.data?.quantity}`}
                   </span>
                 </div>
               </div>
               <div className="product-color">
                 <span className="product-info-tag">Màu sắc:</span>
-                <Style.Color color={productDetail.data.color} />
+                <Style.Color color={productDetail?.data?.color} />
               </div>
-              {productDetail.data.productOptions?.length > 0 && (
+              {productDetail?.data?.productOptions?.length > 0 && (
                 <div className="product-option">
                   <strong className="tag">Size</strong>
                   <Radio.Group
@@ -501,7 +494,7 @@ function ProductInfo({
                 </div>
               )}
               <div className="product-action">
-                {productDetail.data?.quantity === 0 ? (
+                {productDetail.data?.qty === 0 ? (
                   <Button disabled>Hết hàng</Button>
                 ) : (
                   <Space wrap>
@@ -582,20 +575,7 @@ function ProductInfo({
                 key="1"
               >
                 <div className={viewMore ? "list-info active" : "list-info"}>
-                  <p>Chào mừng đến với cửa hàng của chúng tôi:<br />
-
-                    🍀 Nếu quan tâm đến giá sỉ, bạn có thể chat riêng với chúng tôi.<br />
-
-                    🍀 Khi bạn nhận được sản phẩm, vui lòng nhấn chấp nhận.<br />
-
-                    🍀Đánh giá 5 sao rất khuyến khích cho cửa hàng của chúng tôi.<br />
-
-                    🍀 Nếu khách hàng không hài lòng với hệ thống giao hàng. Vui lòng tách dịch vụ khỏi các cửa hàng và công ty vận tải. bởi vì cửa hàng không thể thực sự kiểm soát việc vận chuyển<br />
-
-                    🍀 Nếu sản phẩm có vấn đề hoặc đang được vận chuyển. Xin vui lòng liên hệ với cửa hàng của chúng tôi để được trợ giúp và sửa chữa.<br />
-
-                    🍀 Sản phẩm của chúng tôi có chất lượng cao và giá rẻ. Vì vậy, bạn không phải lo lắng rằng sản phẩm sẽ không khớp với sản phẩm thật. Các sản phẩm có chất lượng cao và chắc chắn rẻ. "<br />
-                  </p>
+                  <span>{` ${productDetail?.data?.description}`}</span>
                   {/* <div className="tab-list-image">
                     {productDetail.data?.images?.map((image, index) => {
                       return (
@@ -665,25 +645,25 @@ function ProductInfo({
               bordered
             >
               <Descriptions.Item label="Sản phẩm" span={3}>
-                {productDetail.data?.name}
+                {productDetail?.data?.name}
               </Descriptions.Item>
               <Descriptions.Item label="Thương hiệu" span={3}>
-                {productDetail.data.category?.name}
+                {productDetail?.data?.category?.name}
               </Descriptions.Item>
               <Descriptions.Item label="Loại giày" span={3}>
-                {productDetail.data.type?.name}
+                {productDetail?.data?.type?.name}
               </Descriptions.Item>
               <Descriptions.Item label="Giày" span={3}>
-                {productDetail.data.department?.name}
+                {productDetail?.data?.department?.name}
               </Descriptions.Item>
               <Descriptions.Item label="Màu sắc" span={3}>
-                <Style.Color color={productDetail.data.color} />
+                <Style.Color color={productDetail?.data?.color} />
               </Descriptions.Item>
               <Descriptions.Item label="Giá" span={3}>
-                {productDetail.data.price?.toLocaleString()} VNĐ
+                {productDetail?.data?.price?.toLocaleString()} VNĐ
               </Descriptions.Item>
               <Descriptions.Item label="Mô tả" span={3}>
-                {productDetail.data.description}
+                {productDetail?.data?.specifications}
               </Descriptions.Item>
             </Descriptions>
           </Style.DescriptionsCard>

@@ -61,12 +61,19 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const userInfo = localStorage.getItem("userInfo");
     if (userInfo) {
-      const decodedUserInfo = jwtDecode(userInfo.accessToken);
-      dispatch(getUserInfoAction({ id: decodedUserInfo.sub }));
+      try {
+        const parsedUserInfo = JSON.parse(userInfo);
+        const decodedUserInfo = jwtDecode(parsedUserInfo?.accessToken);
+        dispatch(getUserInfoAction({ id: decodedUserInfo?.sub }));
+      } catch (error) {
+        console.error("Failed to decode token:", error);
+        // Optional: Handle invalid token (e.g., log out user, clear localStorage)
+        // localStorage.removeItem("userInfo");
+      }
     }
-  }, []);
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={THEME[theme]}>

@@ -14,6 +14,7 @@ function Product({
   priceRange,
   PRODUCT_LIMIT,
 }) {
+  console.log("🚀 ~ productList:", productList)
   const dispatch = useDispatch();
 
   function handleShowMore() {
@@ -34,10 +35,10 @@ function Product({
     return productList.data.map((productItem, productIndex) => {
       return (
         <Style.ProductItem
-          key={`product-item-${productItem.id}-${productIndex}`}
+          key={`product-item-${productItem._id}-${productIndex}`}
         >
           <CardProduct
-            path={`/product/${productItem.name}-${productItem.id}`}
+            path={`/product/${productItem.productName}-${productItem._id}`}
             product={productItem}
           ></CardProduct>
         </Style.ProductItem>

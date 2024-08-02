@@ -6,6 +6,7 @@ import { SERVER_API_URL } from "./apiUrl";
 import { PRODUCT_LIMIT } from "../../constants/product";
 
 function* getProductListSaga(action) {
+  console.log("🚀 ~ function*getProductListSaga ~ action:", action)
   try {
     const page = action.payload?.page;
     const sortValue = action.payload?.sortValue;
@@ -24,10 +25,8 @@ function* getProductListSaga(action) {
     let categoryParams = "";
     if (categoriesSelected) {
       categoriesSelected.forEach((categoryId, categoryIndex) => {
-        const andParams =
-          categoryIndex < categoriesSelected.length - 1 ? "&" : "";
-        categoryParams =
-          categoryParams + `categoryId=${categoryId}${andParams}`;
+        const andParams = categoryIndex < categoriesSelected.length - 1 ? "&" : "";
+        categoryParams = categoryParams + `categoryId=${categoryId}${andParams}`;
       });
     }
     let departmentParams = "";
@@ -56,7 +55,7 @@ function* getProductListSaga(action) {
       });
     }
 
-    let url = `${SERVER_API_URL}/products`;
+    let url = `${SERVER_API_URL}/v1/products?modelName=products`;
     url = categoriesSelected?.length > 0 ? url + `?${categoryParams}` : url;
     if (typesSelected?.length > 0) {
       if (categoriesSelected?.length > 0) {
@@ -84,6 +83,7 @@ function* getProductListSaga(action) {
         url = url + `?${colorParams}`;
       }
     }
+
     const result = yield axios({
       method: "GET",
       url,
@@ -104,26 +104,27 @@ function* getProductListSaga(action) {
       },
     });
 
-    const productData = result.data.map((productItem) => {
-      return {
-        ...productItem,
-        rate:
-          productItem.comments.length === 0
-            ? 0
-            : Math.round(
-                (productItem.comments.reduce(
-                  (result, comment) => (result += comment.rating),
-                  0
-                ) /
-                  productItem.comments.length) *
-                  2
-              ) / 2,
-      };
-    });
+    console.log("🚀 ~ function*getProductListSaga ~ result:", result)
+    // const productData = result?.data?.dataObject.map((productItem) => {
+    //   return {
+    //     ...productItem,
+    //     rate:
+    //       productItem.comments.length === 0
+    //         ? 0
+    //         : Math.round(
+    //             (productItem.comments.reduce(
+    //               (result, comment) => (result += comment.rating),
+    //               0
+    //             ) /
+    //               productItem.comments.length) *
+    //               2
+    //           ) / 2,
+    //   };
+    // });
     yield put({
       type: SUCCESS(PRODUCT_ACTION.GET_PRODUCT_LIST),
       payload: {
-        data: productData,
+        data: result?.data?.dataObject,
         total: result.headers["x-total-count"],
         page,
         more,
@@ -140,33 +141,35 @@ function* getProductListSaga(action) {
 function* getProductDetailSaga(action) {
   try {
     const { id } = action.payload;
+    let url = `${SERVER_API_URL}/v1/products/${id}?modelName=products`;
     const result = yield axios({
       method: "GET",
-      url: `${SERVER_API_URL}/products/${id}`,
+      url,
       params: {
         _embed: ["productOptions", "comments"],
         _expand: ["department", "category", "type"],
       },
     });
+    console.log("🚀 ~ function*getProductDetailSaga ~ result:", result)
 
-    const productDetailData = {
-      ...result.data,
-      rate:
-        result.data.comments.length === 0
-          ? 0
-          : Math.round(
-              (result.data.comments.reduce(
-                (result, comment) => (result += comment.rating),
-                0
-              ) /
-                result.data.comments.length) *
-                2
-            ) / 2,
-    };
+    // const productDetailData = {
+    //   ...result.data,
+    //   rate:
+    //     result.data.comments.length === 0
+    //       ? 0
+    //       : Math.round(
+    //           (result.data.comments.reduce(
+    //             (result, comment) => (result += comment.rating),
+    //             0
+    //           ) /
+    //             result.data.comments.length) *
+    //             2
+    //         ) / 2,
+    // };
     yield put({
       type: SUCCESS(PRODUCT_ACTION.GET_PRODUCT_DETAIL),
       payload: {
-        data: productDetailData,
+        data: result.data.dataObject,
       },
     });
   } catch (e) {

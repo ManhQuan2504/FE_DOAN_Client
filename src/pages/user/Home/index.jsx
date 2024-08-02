@@ -32,6 +32,7 @@ function HomePage() {
     dispatch(getProductListAction({ loadHome: true }));
     dispatch(getBlogListAction({ page: 1 }));
   }, []);
+  console.log("🚀 ~ HomePage ~ productList:", productList)
 
   const shoesMenList = {
     data: productList.data?.filter(

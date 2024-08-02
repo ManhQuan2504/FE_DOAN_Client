@@ -9,7 +9,7 @@ function ProductRelated({ productList }) {
       <Row gutter={[15, 20]}>
         <Col span={24}>
           <div className="title">
-            <div>Giày runner</div>
+            <div>LANCHISHOP</div>
             <h2>Sản phẩm tương tự</h2>
           </div>
         </Col>

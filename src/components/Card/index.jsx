@@ -9,25 +9,25 @@ function CardProduct({ product, path }) {
       <Style.CardProduct onClick={() => history.push(path)}>
         <Style.ProductImage onClick={() => history.push(path)}>
           <img
-            src={product.images[0]}
+            src={product.images[0].absoluteUrl}
             className="visible content"
             alt={product.name}
           />
           <img
-            src={product.images[1]}
+            src={product.images[0].absoluteUrl}
             className="hidden content"
             alt={product.name}
           />
         </Style.ProductImage>
         <Style.ProductContent>
-          <h3 onClick={() => history.push(path)}>{product.name}</h3>
+          <h3 onClick={() => history.push(path)}>{product.productName}</h3>
           <strong>{product?.price?.toLocaleString()}₫</strong>
           <div align="center" className="card-info">
             <Rate className="star" allowHalf disabled value={product.rate} />
             <span className="quantity">
-              {product.quantity === 0
+              {product.qty === 0
                 ? "đã hết"
-                : `còn ${product.quantity} sản phẩm`}
+                : `còn ${product.qty} sản phẩm`}
             </span>
           </div>
           <div align="center" className="card-info brand-info">

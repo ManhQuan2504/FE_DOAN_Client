@@ -222,6 +222,29 @@ export const TabCard = styled.div`
   }
 `;
 
+const COLOR_MENU = [
+  { name: "đen", code: "000000" },
+  { name: "trắng", code: "ffffff" },
+  { name: "xám", code: "808080" },
+  { name: "bạc", code: "c0c0c0" },
+  { name: "đỏ", code: "e7352b" },
+  { name: "xanh dương", code: "1790c8" },
+  { name: "nâu", code: "825d41" },
+  { name: "vàng", code: "fed533" },
+  { name: "hồng", code: "ff69b4" },
+  { name: "tím", code: "800080" },
+  { name: "xanh ngọc", code: "00ced1" },
+  { name: "be", code: "f5f5dc" },
+  { name: "xanh navy", code: "000080" },
+  { name: "nhiều màu", code: "multiColor" },
+];
+
+// Hàm để lấy mã màu từ tên màu
+const getColorCode = (colorName) => {
+  const color = COLOR_MENU.find(item => item.name === colorName);
+  return color ? color.code : null;
+};
+
 export const Color = styled.div`
   display: inline-flex;
   align-items: center;
@@ -230,12 +253,14 @@ export const Color = styled.div`
   height: 25px;
   border-radius: 50%;
   border: 2px solid rgb(229, 229, 229);
-  background: ${(props) =>
-    props.color
-      ? props.color === "multiColor"
+  background: ${(props) => {
+    const colorCode = getColorCode(props.color);
+    return colorCode
+      ? colorCode === "multiColor"
         ? "radial-gradient(circle, #59ae12, #a5a100, #d88f1f, #f77e54, #ff7887, #fb81b6, #e493df, #bfa8fd, #8bc3ff, #4cdaff, #29edff, #5ffbf1);"
-        : props.color
-      : "white"};
+        : `#${colorCode}`
+      : "white";
+  }};
 `;
 
 export const DescriptionsCard = styled.div`

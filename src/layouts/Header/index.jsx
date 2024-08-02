@@ -15,10 +15,10 @@ import * as Style from "./styles";
 import Avatar from "antd/lib/avatar/avatar";
 
 function Header({ type }) {
-  console.log("🚀 ~ Header ~ type:", type)
+  // console.log("🚀 ~ Header ~ type:", type)
   const { cartList } = useSelector((state) => state.cartReducer);
   const { userInfo } = useSelector((state) => state.userReducer);
-  console.log("🚀 ~ Header ~ userInfo:", userInfo)
+  // console.log("🚀 ~ Header ~ userInfo:", userInfo)
   const dispatch = useDispatch();
 
   const [sticky, setSticky] = useState(true);
