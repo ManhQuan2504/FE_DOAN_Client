@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { logoutAction } from "../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -15,14 +14,18 @@ import * as Style from "./styles";
 import Avatar from "antd/lib/avatar/avatar";
 
 function Header({ type }) {
-  // console.log("🚀 ~ Header ~ type:", type)
   const { cartList } = useSelector((state) => state.cartReducer);
   const { userInfo } = useSelector((state) => state.userReducer);
-  // console.log("🚀 ~ Header ~ userInfo:", userInfo)
   const dispatch = useDispatch();
 
   const [sticky, setSticky] = useState(true);
   const [visible, setVisible] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    setUser(userInfo);
+  }, [userInfo]);
+
   const showDrawer = () => {
     setVisible(true);
   };
@@ -44,20 +47,16 @@ function Header({ type }) {
   function handleLogout() {
     localStorage.removeItem("userInfo");
     dispatch(logoutAction());
-    // if (type === "admin") {
-      history.push("/login");
-    // }
+    history.push("/login");
   }
 
   const menu = (
     <Menu>
-      {/* {userInfo.data?.role === "admin" && ( */}
-        <Menu.Item>
-          <Space size={5} align="center" onClick={() => history.push("/admin")}>
-            <Icons.ThunderboltOutlined /> <span>Trang Admin</span>
-          </Space>
-        </Menu.Item>
-      {/* )} */}
+      <Menu.Item>
+        <Space size={5} align="center" onClick={() => history.push("/admin")}>
+          <Icons.ThunderboltOutlined /> <span>Trang Admin</span>
+        </Space>
+      </Menu.Item>
       <Menu.Item>
         <Space
           size={5}
@@ -114,10 +113,6 @@ function Header({ type }) {
       title: "Máy giặt",
       path: "/product/kids",
     },
-    // {
-    //   title: "Giới thiệu",
-    //   path: "/about",
-    // },
     {
       title: "Bài viết",
       path: "/blog",
@@ -127,6 +122,7 @@ function Header({ type }) {
       path: "/contact",
     },
   ];
+
   function renderListNav() {
     return ListNav.map((nav, index) => (
       <Style.HeaderItem key={`${nav.title}-${index}`}>
@@ -139,13 +135,6 @@ function Header({ type }) {
 
   return (
     <>
-      {/* {!(type === "admin") && (
-        <TopBar
-          text="Miễn phí vận chuyển với đơn hàng nội thành > 300k - Đổi trả trong 30 ngày -
-      Đảm bảo chất lượng"
-        />
-      )} */}
-
       <Style.Header className={sticky ? null : "sticky"}>
         <Style.HeaderContainer>
           <div className="menu-container menu-hide-desktop">
@@ -164,7 +153,7 @@ function Header({ type }) {
             visible={visible}
           >
             <div className="user-mobile">
-              {userInfo.data.name ? (
+              {user?.data?.data?.customerName ? (
                 <>
                   <Dropdown
                     overlay={menu}
@@ -173,8 +162,8 @@ function Header({ type }) {
                     trigger={["click"]}
                   >
                     <Space align="center" className="avatar-mobile">
-                      <Avatar src={userInfo.data?.avatar} />
-                      <strong>{userInfo.data?.name}</strong>
+                      <Avatar src={user?.data?.data?.avatar} />
+                      <strong>{user?.data?.data?.customerName}</strong>
                     </Space>
                   </Dropdown>
                 </>
@@ -237,7 +226,7 @@ function Header({ type }) {
                 </Badge>
               )}
               <div className="user-action">
-                {userInfo?.data?.data?.customerName ? (
+                {user?.data?.data?.customerName ? (
                   <>
                     <Dropdown
                       overlay={menu}
@@ -246,7 +235,7 @@ function Header({ type }) {
                       trigger={["click"]}
                     >
                       <Space align="center" style={{ cursor: "pointer" }}>
-                        <Avatar size="large" src={userInfo?.data?.data?.avatar} />
+                        <Avatar size="large" src={user?.data?.data?.avatar} />
                       </Space>
                     </Dropdown>
                   </>

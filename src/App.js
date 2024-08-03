@@ -65,8 +65,9 @@ function App() {
     if (userInfo) {
       try {
         const parsedUserInfo = JSON.parse(userInfo);
-        const decodedUserInfo = jwtDecode(parsedUserInfo?.accessToken);
-        dispatch(getUserInfoAction({ id: decodedUserInfo?.sub }));
+        const accessToken = parsedUserInfo?.token;
+        const decodedUserInfo = jwtDecode(accessToken);
+        dispatch(getUserInfoAction({ id: decodedUserInfo?.data._id }));
       } catch (error) {
         console.error("Failed to decode token:", error);
         // Optional: Handle invalid token (e.g., log out user, clear localStorage)

@@ -126,7 +126,10 @@ function userReducer(state = initialState, action) {
       };
     }
     case SUCCESS(USER_ACTION.GET_USER_INFO): {
-      const { data } = action.payload;
+      const { data: rowData } = action.payload;
+      const { dataObject } = rowData;
+      const data = { data: dataObject };
+    
       return {
         ...state,
         userInfo: {
@@ -137,6 +140,8 @@ function userReducer(state = initialState, action) {
         },
       };
     }
+    
+    
     case FAILURE(USER_ACTION.GET_USER_INFO): {
       const { error } = action.payload;
       return {

@@ -14,16 +14,17 @@ function* loginSaga(action) {
       data,
     };
     const result = yield call(axios.post, `${SERVER_API_URL}/v1/customers/login`, reqData);
+    const userData = result?.data?.dataObject;
 
     yield call([localStorage, 'setItem'], "userInfo", JSON.stringify({
-      data: result.data.dataObject,
-      accessToken: result.data.token,
+      data: userData?.data,
+      token: result?.data?.dataObject?.token,
     }));
 
     yield put({
       type: SUCCESS(USER_ACTION.LOGIN),
       payload: {
-        data: result.data.dataObject,
+        data: userData,
       },
     });
 
@@ -32,14 +33,13 @@ function* loginSaga(action) {
     });
 
     // Điều hướng người dùng dựa trên vai trò
-    if (result.data.dataObject.role === "admin") {
-      yield call(history.push, "/admin");
-    } else {
+    // if (result.data.dataObject.role === "admin") {
+    //   yield call(history.push, "/admin");
+    // } else {
       yield call(history.push, "/");
-    }
+    // }
   } catch (e) {
     // Bắt và xử lý lỗi
-    console.log("🚀 ~ function*loginSaga ~ e:", e);
 
     let errorMessage = 'Email hoặc mật khẩu không đúng!';
     const responseError = e?.response?.data?.error || "";
@@ -108,7 +108,7 @@ function* getUserInfoSaga(action) {
     const { id } = action.payload;
     const result = yield axios({
       method: "GET",
-      url: `${SERVER_API_URL}/users/${id}`,
+      url: `${SERVER_API_URL}/v1/customers/${id}?modelName=customers`,
       params: {
         _embed: "orders",
       },

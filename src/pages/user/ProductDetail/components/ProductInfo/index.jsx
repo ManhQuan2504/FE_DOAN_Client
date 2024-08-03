@@ -367,12 +367,12 @@ function ProductInfo({
   function handleAddComment(values) {
     dispatch(
       addCommentProductAction({
-        idProduct: parseInt(productID),
-        idUser: userInfo.data.id,
+        idProduct: parseInt(productID) ? parseInt(productID) : '',
+        idUser: userInfo?.data?.id,
         data: {
           ...values,
-          userId: userInfo.data.id,
-          productId: parseInt(productID),
+          userId: userInfo?.data?.id,
+          productId: parseInt(productID) ? parseInt(productID) : '',
         },
       })
     );
@@ -380,14 +380,13 @@ function ProductInfo({
   }
   console.log("🚀 ~ cartList:", cartList)
 
-  let maxCount = cartList?.data.find(
-    (cartitem) => cartitem.productId === parseInt(productID)
-  )
-    ? productDetail.data.quantity -
-    cartList.data.find(
-      (cartitem) => cartitem.productId === parseInt(productID)
-    ).count
+  let maxCount = cartList?.data?.length > 0
+    ? cartList.data.find((cartitem) => cartitem?.productId === parseInt(productID))
+      ? productDetail?.data?.quantity - cartList.data.find((cartitem) => cartitem?.productId === parseInt(productID)).count
+      : productDetail?.data?.quantity
     : productDetail?.data?.quantity;
+
+
   return (
     <Style.ProductInfo>
       <Style.MainInfo>
