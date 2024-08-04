@@ -21,18 +21,19 @@ const cartReducer = createReducer(initialState, {
       ...state,
       cartList: {
         ...state.cartList,
-        data: data.carts,
+        data: data?.dataObject?.carts,
       },
     };
   },
 
   [SUCCESS(USER_ACTION.GET_USER_INFO)]: (state, action) => {
     const { data } = action.payload;
+    console.log("🚀 ~ !!!!!!!!!!![SUCCESS ~ data:", data)
     return {
       ...state,
       cartList: {
         ...state.cartList,
-        data: data.carts,
+        data: data?.dataObject?.carts,
       },
     };
   },
@@ -65,7 +66,7 @@ const cartReducer = createReducer(initialState, {
       ...state,
       cartList: {
         ...state.cartList,
-        data: data.carts,
+        data: data?.dataObject?.carts,
       },
     };
   },
@@ -76,7 +77,7 @@ const cartReducer = createReducer(initialState, {
       ...state,
       cartList: {
         ...state.cartList,
-        data: data.carts,
+        data: data?.dataObject?.carts,
       },
     };
   },
@@ -87,7 +88,7 @@ const cartReducer = createReducer(initialState, {
       ...state,
       cartList: {
         ...state.cartList,
-        data: data.carts,
+        data: data?.dataObject?.carts,
       },
     };
   },

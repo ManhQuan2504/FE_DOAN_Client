@@ -212,7 +212,7 @@ function CartPage() {
   return (
     <Style.CartPage>
       <Hero title="Giỏ hàng" />
-      {cartList.data.length === 0 ? (
+      {(!cartList || cartList?.data?.length === 0) ? (
         <Style.Empty>
           <div>
             <img src={empty} alt="" />
@@ -247,7 +247,7 @@ function CartPage() {
                     <List.Item>
                       <div className="list-item">
                         <span>
-                          {cartList.data.length > 0
+                          {(!cartList || cartList?.data?.length) === 0
                             ? totalCount + " sản phẩm"
                             : 0 + " sản phẩm"}
                         </span>

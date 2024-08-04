@@ -39,6 +39,11 @@ import "moment/locale/vi";
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
+// notification.config({
+//   placement: 'topRight', // Thay đổi giá trị này theo nhu cầu: 'bottomLeft', 'bottomRight', 'topLeft', 'topRight'
+//   top: 60, // Khoảng cách từ dưới lên (px)
+//   duration: 3, //Thời gian
+// });
 
 function ProductInfo({
   userInfo,
@@ -48,8 +53,11 @@ function ProductInfo({
   commentList,
   productID,
 }) {
+  console.log("🚀 ~ productDetail:", productDetail)
+  console.log("🚀 ~ userInfo:", userInfo)
   const { wishList } = useSelector((state) => state.wishlistReducer);
   const { cartList } = useSelector((state) => state.cartReducer);
+  console.log("🚀 ~ cartList:", cartList)
 
   console.log(cartList.data);
   const [swiper, setSwiper] = useState(null);
@@ -127,7 +135,7 @@ function ProductInfo({
 
   /// Dùng với kiểu cần đăng nhập để bỏ vào giỏ hàng
   function handleAddToCart() {
-    if (!userInfo.data.name) {
+    if (!userInfo.data.data.customerName) {
       const key = `open${Date.now()}`;
       return notification.warning({
         message: "Chưa đăng nhập",
@@ -147,6 +155,7 @@ function ProductInfo({
       });
     }
     if (optionSelected.id) {
+      console.log("🚀 ~ handleAddToCart ~ optionSelected:", optionSelected)
       const existOptionIndex = cartList.data?.findIndex(
         (item) => item.option.id === optionSelected.id
       );
@@ -244,14 +253,14 @@ function ProductInfo({
               {
                 productId: parseInt(productID),
                 count: productCount,
-                name: productDetail.data.name,
-                price: productDetail.data.price,
-                color: productDetail.data.color,
-                image: productDetail.data.images[0],
-                quantity: productDetail.data.quantity,
-                category: productDetail.data.category.name,
-                type: productDetail.data.type.name,
-                department: productDetail.data.department.description,
+                name: productDetail?.data?.name,
+                price: productDetail?.data?.price,
+                color: productDetail?.data?.color,
+                image: productDetail?.data?.images[0],
+                quantity: productDetail?.data?.quantity,
+                category: productDetail?.data?.category?.name,
+                type: productDetail?.data?.type?.name,
+                department: productDetail?.data?.department?.description,
                 option: {},
               },
             ],
@@ -364,6 +373,20 @@ function ProductInfo({
     });
   }
 
+  function parseSpecifications(specifications) {
+    const lines = specifications.split('\n');
+    const specObject = {};
+
+    lines.forEach(line => {
+      const [key, value] = line.split(': ');
+      if (key && value) {
+        specObject[key.trim()] = value.trim();
+      }
+    });
+
+    return specObject;
+  }
+
   function handleAddComment(values) {
     dispatch(
       addCommentProductAction({
@@ -386,6 +409,8 @@ function ProductInfo({
       : productDetail?.data?.quantity
     : productDetail?.data?.quantity;
 
+  const specifications = productDetail?.data?.specifications;
+  const specObject = specifications ? parseSpecifications(specifications) : {};
 
   return (
     <Style.ProductInfo>
@@ -453,7 +478,7 @@ function ProductInfo({
               </div>
               <div className="product-info-list">
                 <div className="product-brand-item">
-                  <span className="product-info-tag">Danh mục:</span>
+                  <span className="product-info-tag">Loại sản phẩm:</span>
                   <span className="product-info-text">
                     <span>{`${productDetail?.data?.category?.categoryName}`}</span>
                   </span>
@@ -465,17 +490,17 @@ function ProductInfo({
               </div>
               <div className="product-info-list">
                 <div className="product-type-item">
-                  <span className="product-info-tag">Sản phẩm dành cho:</span>
-                  <span className="product-info-text">{` ${productDetail?.data?.department?.name}`}</span>
-                </div>
-                <div className="product-type-item">
                   <span className="product-info-tag">Số lượng sản phẩm:</span>
                   <span className="product-info-text">
-                    {productDetail?.data?.quantity === 0
+                    {productDetail?.data?.qty === 0
                       ? "đã hết"
-                      : ` ${productDetail?.data?.quantity}`}
+                      : ` ${productDetail?.data?.qty}`}
                   </span>
                 </div>
+                {/* <div className="product-type-item">
+                  <span className="product-info-tag">Số lượng sản phẩm:</span>
+                  <span className="product-info-text">{` ${productDetail?.data?.department?.name}`}</span>
+                </div> */}
               </div>
               <div className="product-color">
                 <span className="product-info-tag">Màu sắc:</span>
@@ -568,24 +593,22 @@ function ProductInfo({
                 tab={
                   <span>
                     <Icons.FileSearchOutlined />
-                    Giới thiệu
+                    Thông tin sản phẩm
                   </span>
                 }
                 key="1"
               >
                 <div className={viewMore ? "list-info active" : "list-info"}>
-                  <span>{` ${productDetail?.data?.description}`}</span>
-                  {/* <div className="tab-list-image">
-                    {productDetail.data?.images?.map((image, index) => {
-                      return (
-                        <Image
-                          onClick={() => slideTo(index)}
-                          preview={false}
-                          src={image}
-                          placeholder={<div className="bg-animate" />}
-                        />
-                      );
-                    })}
+                  <div className="description-text">
+                    {typeof productDetail?.data?.description === 'string' ? (
+                      productDetail.data.description.split('. ').map((item, index) => (
+                        <React.Fragment key={index}>
+                          <p>{item}</p>
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      <p>No description available</p> // Hiển thị thông báo hoặc nội dung khác khi không có mô tả
+                    )}
                   </div>
                   <Button
                     style={{
@@ -598,8 +621,9 @@ function ProductInfo({
                     onClick={() => setViewMore(!viewMore)}
                   >
                     {viewMore ? "View Less" : "View More"}
-                  </Button> */}
+                  </Button>
                 </div>
+
               </TabPane>
               <TabPane
                 tab={
@@ -639,31 +663,15 @@ function ProductInfo({
         >
           <Style.DescriptionsCard>
             <Descriptions
-              title={<span>Thông tin sản phẩm</span>}
+              title={<span>Thông số kĩ thuật</span>}
               layout="horizontal"
               bordered
             >
-              <Descriptions.Item label="Sản phẩm" span={3}>
-                {productDetail?.data?.name}
-              </Descriptions.Item>
-              <Descriptions.Item label="Thương hiệu" span={3}>
-                {productDetail?.data?.category?.name}
-              </Descriptions.Item>
-              <Descriptions.Item label="Loại giày" span={3}>
-                {productDetail?.data?.type?.name}
-              </Descriptions.Item>
-              <Descriptions.Item label="Giày" span={3}>
-                {productDetail?.data?.department?.name}
-              </Descriptions.Item>
-              <Descriptions.Item label="Màu sắc" span={3}>
-                <Style.Color color={productDetail?.data?.color} />
-              </Descriptions.Item>
-              <Descriptions.Item label="Giá" span={3}>
-                {productDetail?.data?.price?.toLocaleString()} VNĐ
-              </Descriptions.Item>
-              <Descriptions.Item label="Mô tả" span={3}>
-                {productDetail?.data?.specifications}
-              </Descriptions.Item>
+              {Object.entries(specObject).map(([key, value]) => (
+                <Descriptions.Item key={key} label={key} span={3}>
+                  {value}
+                </Descriptions.Item>
+              ))}
             </Descriptions>
           </Style.DescriptionsCard>
         </Col>

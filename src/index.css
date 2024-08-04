@@ -48,9 +48,11 @@ img {
   padding-bottom: 15px;
   cursor: pointer;
 }
+
 .ant-drawer-body .user-mobile .btn-login {
   margin-bottom: 15px;
 }
+
 .ant-drawer-body ul {
   display: flex;
   flex-direction: column;
@@ -60,6 +62,7 @@ img {
   border-top: 2px solid rgba(0, 0, 0, 0.4);
   border-bottom: 2px solid rgba(0, 0, 0, 0.4);
 }
+
 .ant-drawer-body ul li span {
   display: block;
   text-decoration: none;
@@ -67,4 +70,36 @@ img {
   color: #000;
   cursor: pointer;
   font-weight: 600;
+}
+
+.ant-notification-topRight {
+  top: 60px !important;
+}
+
+.list-info {
+  position: relative;
+  max-width: 100%;
+  /* Hoặc bất kỳ kích thước cố định nào bạn muốn */
+  word-wrap: break-word;
+}
+
+.description-text {
+  white-space: pre-wrap;
+  /* Giữ định dạng xuống dòng và ngắt từ */
+  overflow-wrap: break-word;
+  /* Ngắt từ để phù hợp với kích thước */
+  text-indent: 1.5em;
+  /* Thụt đầu dòng */
+}
+
+.description-text p {
+  margin-bottom: 1em;
+  /* Khoảng cách giữa các đoạn */
+}
+
+.description-text .line-break {
+  display: block;
+  /* Hiển thị dấu chấm như một phần tử riêng biệt */
+  margin-bottom: 1em;
+  /* Khoảng cách thêm cho dấu chấm */
 }

@@ -108,7 +108,7 @@ function Footer() {
           href="https://github.com/"
           target="_blank"
         >
-          Design by ManhQuan
+          Design by MotBanTotBungGiauTen
         </a>
       </Style.CopyRight>
     </Style.Footer>
