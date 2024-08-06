@@ -7,13 +7,21 @@ import { SERVER_API_URL } from "./apiUrl";
 function* addToCartSaga(action) {
   try {
     const { userId, carts } = action.payload;
-    const result = yield axios({
-      method: "PATCH",
-      url: `${SERVER_API_URL}/users/${userId}`,
-      data: {
-        carts: carts,
-      },
-    });
+    console.log("🚀 ~ function*addToCartSaga ~ carts:", carts)
+    console.log("🚀 ~ function*addToCartSaga ~ userId:", userId)
+    // const result = yield axios({
+    //   method: "PUT",
+    //   url: `${SERVER_API_URL}/v1/customers/${userId}`,
+    //   data: {
+    //     modelName: "customers",
+    //     data: carts,
+    //   },
+    // });
+    const data = {
+      modelName: "customers",
+      data: {carts: carts},
+    };
+    const result = yield axios.put(`${SERVER_API_URL}/v1/customers/${userId}`, data);
     yield put({
       type: SUCCESS(CART_ACTION.ADD_TO_CART),
       payload: {

@@ -156,6 +156,8 @@ function ProductInfo({
     }
     if (optionSelected.id) {
       console.log("🚀 ~ handleAddToCart ~ optionSelected:", optionSelected)
+      console.log("🚀 ~ handleAddToCart ~ cartList:", cartList)
+
       const existOptionIndex = cartList.data?.findIndex(
         (item) => item.option.id === optionSelected.id
       );
@@ -216,9 +218,12 @@ function ProductInfo({
         );
       }
     } else {
+      console.log("🚀 ~ handleAddToCart ~ cartList:", cartList)
       const existProductIndex = cartList.data?.findIndex(
         (item) => item.productId === parseInt(productID)
       );
+      console.log("🚀 ~ handleAddToCart ~ existProductIndex:", existProductIndex)
+
       if (existProductIndex !== -1) {
         const newCart = [...cartList.data];
         newCart?.splice(existProductIndex, 1, {
@@ -238,6 +243,7 @@ function ProductInfo({
           department: productDetail.data.department.description,
           option: {},
         });
+        console.log("🚀 ~ handleAddToCart ~ newCart:", newCart)
         dispatch(
           addToCartAction({
             userId: userInfo.data.id,
@@ -247,20 +253,24 @@ function ProductInfo({
       } else {
         dispatch(
           addToCartAction({
-            userId: userInfo.data.id,
+            userId: userInfo?.data?.data?._id,
             carts: [
               ...cartList.data,
               {
-                productId: parseInt(productID),
+                productId: productDetail?.data?._id,
+                productCode: productDetail?.data?.productCode,
+                productName: productDetail?.data?.productName,
                 count: productCount,
-                name: productDetail?.data?.name,
                 price: productDetail?.data?.price,
                 color: productDetail?.data?.color,
                 image: productDetail?.data?.images[0],
-                quantity: productDetail?.data?.quantity,
-                category: productDetail?.data?.category?.name,
+                quantity: productDetail?.data?.qty,
+                category: productDetail?.data?.category,
+                brand: productDetail?.data?.brand,
                 type: productDetail?.data?.type?.name,
-                department: productDetail?.data?.department?.description,
+                description: productDetail?.data?.description,
+                specifications: productDetail?.data?.specifications,
+                tax: productDetail?.data?.tax,
                 option: {},
               },
             ],

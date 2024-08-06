@@ -36,13 +36,16 @@ function CartPage() {
     const img = new Image();
     img.src = empty;
     dispatch(getTicketListAction());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    countTotal();
-  }, [cartList.data]);
+    if (cartList?.data) {
+      countTotal();
+    }
+  }, [cartList?.data]);
 
   function handlePlusCount(index) {
+    if (!cartList?.data) return;
     const newCartData = [...cartList.data];
     newCartData.splice(index, 1, {
       ...newCartData[index],
@@ -60,7 +63,7 @@ function CartPage() {
   }
 
   function handleMinusCount(index) {
-    if (cartList.data[index].count === 1) return null;
+    if (!cartList?.data || cartList.data[index].count === 1) return;
     const newCartData = [...cartList.data];
     newCartData.splice(index, 1, {
       ...newCartData[index],
@@ -78,6 +81,7 @@ function CartPage() {
   }
 
   function handleDeleteItem(index) {
+    if (!cartList?.data) return;
     const newCartData = [...cartList.data];
     newCartData.splice(index, 1);
     dispatch(
@@ -90,7 +94,7 @@ function CartPage() {
 
   function handleCheckTicket() {
     if (ticket) {
-      const checkCode = ticketList.data?.find(
+      const checkCode = ticketList?.data?.find(
         (ticketItem) => ticketItem.code.toLowerCase() === ticket.toLowerCase()
       );
       if (checkCode) {
@@ -108,7 +112,7 @@ function CartPage() {
   }
 
   function handleCheckout() {
-    if (!userInfo.data.id) {
+    if (!userInfo?.data?.data?._id) {
       notification.warn({
         message: "Bạn chưa đăng nhập",
       });
@@ -116,7 +120,7 @@ function CartPage() {
       dispatch(
         totalInfoCheckoutAction({
           orderInfo: {
-            userId: userInfo.data.id,
+            userId: userInfo?.data?.data?._id,
             total: total ? total : totalPrice,
             percent: percent,
           },
@@ -128,8 +132,8 @@ function CartPage() {
 
   function countTotal() {
     let totalNum = 0;
-    cartList?.data?.map((cartItem, cartIndex) => {
-      totalNum = cartItem.option.id
+    cartList?.data?.forEach((cartItem) => {
+      totalNum = cartItem.option?.id
         ? totalNum + (cartItem.price + cartItem.option.price) * cartItem.count
         : totalNum + cartItem.price * cartItem.count;
     });
@@ -140,42 +144,42 @@ function CartPage() {
     }
   }
 
-  function renderCartList(params) {
+  function renderCartList() {
     return cartList?.data?.map((cartItem, cartIndex) => {
-      totalCount = cartItem.option.id
+      totalCount = cartItem?.option?.id
         ? totalCount + cartItem.count
         : totalCount + cartItem.count;
-      totalPrice = cartItem.option.id
+      totalPrice = cartItem?.option?.id
         ? totalPrice + (cartItem.price + cartItem.option.price) * cartItem.count
         : totalPrice + cartItem.price * cartItem.count;
       return (
-        <Style.CartItem>
+        <Style.CartItem key={cartIndex}>
           <div className="cart-image">
-            <img src={cartItem.image} alt="" />
+            <img src={cartItem?.image?.absoluteUrl} alt="" />
           </div>
           <div className="cart-content">
             <div className="cart-content-box">
-              <h3>{cartItem.name}</h3>
+              <h3>{cartItem?.productName}</h3>
               <span>
                 {(
-                  cartItem.price +
-                  (cartItem.option.id ? cartItem.option.price : 0)
+                  cartItem?.price +
+                  (cartItem?.option?.id ? cartItem?.option?.price : 0)
                 ).toLocaleString() + "₫"}
               </span>
             </div>
             <div className="cart-info-list">
               <div className="cart-info-item">
-                <span className="cart-info-tag">Thương hiệu: </span>
-                <span className="cart-info-text">{cartItem.category}</span>
+                <span className="cart-info-tag">Loại sản phẩm: </span>
+                <span className="cart-info-text">{cartItem?.category?.categoryName}</span>
               </div>
               <div className="cart-info-item">
-                <span className="cart-info-tag">Loại giày: </span>
-                <span className="cart-info-text">{cartItem.type}</span>
+                <span className="cart-info-tag">Thương hiệu: </span>
+                <span className="cart-info-text">{cartItem?.brand?.categoryName}</span>
               </div>
-              {cartItem.option.id && (
+              {cartItem?.option?.id && (
                 <div className="cart-info-item">
                   <span className="cart-info-tag">Size: </span>
-                  <span className="cart-info-text">{cartItem.option.size}</span>
+                  <span className="cart-info-text">{cartItem?.option?.size}</span>
                 </div>
               )}
             </div>
@@ -185,7 +189,7 @@ function CartPage() {
                 onClick={() => handleMinusCount(cartIndex)}
               />
               <Input
-                value={cartItem.count}
+                value={cartItem?.count}
                 readOnly
                 style={{ width: 40, textAlign: "center" }}
               />
@@ -246,11 +250,7 @@ function CartPage() {
                   >
                     <List.Item>
                       <div className="list-item">
-                        <span>
-                          {(!cartList || cartList?.data?.length) === 0
-                            ? totalCount + " sản phẩm"
-                            : 0 + " sản phẩm"}
-                        </span>
+                        <span>{totalCount} sản phẩm</span>
                         <span>{totalPrice.toLocaleString() + "₫"}</span>
                       </div>
                     </List.Item>

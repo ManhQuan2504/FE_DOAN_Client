@@ -19,10 +19,10 @@ function Confirm({
   checkoutForm,
   columns,
   data,
-  handleChageCity,
-  handleChageDistrict,
+  handleChangeCity,
+  handleChangeDistrict,
   locationSelect,
-  handleChageWard,
+  handleChangeWard,
   location,
   totalPrice,
   orderInfo,
@@ -50,8 +50,8 @@ function Confirm({
         name="basic"
         layout="vertical"
         initialValues={{
-          name: userInfo.data.name,
-          email: userInfo.data.email,
+          name: userInfo?.data?.data?.customerName,
+          email: userInfo?.data?.data?.email,
           ...confirm,
         }}
         onFinish={(values) => {
@@ -91,7 +91,7 @@ function Confirm({
             <Col xs={24} md={12} lg={8}>
               <Form.Item
                 label="Tên khách hàng"
-                name="name"
+                name="customerName"
                 rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
               >
                 <Input />
@@ -133,7 +133,7 @@ function Confirm({
               >
                 <Select
                   placeholder="Chọn tỉnh thành phố"
-                  onChange={handleChageCity}
+                  onChange={handleChangeCity}
                   allowClear
                 >
                   {location.cities.map((city, cityIndex) => {
@@ -159,7 +159,7 @@ function Confirm({
               >
                 <Select
                   placeholder="Chọn quận huyện"
-                  onChange={handleChageDistrict}
+                  onChange={handleChangeDistrict}
                   allowClear
                 >
                   {location.districts
@@ -193,7 +193,7 @@ function Confirm({
               >
                 <Select
                   placeholder="Chọn phường xã"
-                  onChange={handleChageWard}
+                  onChange={handleChangeWard}
                   allowClear
                 >
                   {location.wards

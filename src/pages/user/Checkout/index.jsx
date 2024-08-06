@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Form, Space, notification, Tag, Steps, Image } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import Loading from "../../../components/Loading";
+import axios from "axios";
 
 import {
   editProductAction,
@@ -11,7 +12,6 @@ import {
 import * as Style from "./style";
 import Hero from "../../../components/Hero";
 import { COLOR_MENU } from "../../../constants/color";
-import axios from "axios";
 import Confirm from "./components/Comfirm";
 import Payment from "./components/Payment";
 
@@ -45,43 +45,51 @@ function CheckoutPage() {
 
   useEffect(() => {
     dispatch(getProductListAction({ loadHome: true }));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const getLocation = async () => {
       setLoading(true);
-      const wards = await axios.get(
-        "https://location-api-0ho5.onrender.com/wards"
-      );
-      const districts = await axios.get(
-        "https://location-api-0ho5.onrender.com/districts"
-      );
-      const cities = await axios.get(
-        "https://location-api-0ho5.onrender.com/cities"
-      );
-      setLocation({
-        wards: wards.data,
-        districts: districts.data,
-        cities: cities.data,
-      });
-      setLoading(false);
+      try {
+        const wards = await axios.get(
+          "https://location-api-0ho5.onrender.com/wards"
+        );
+        const districts = await axios.get(
+          "https://location-api-0ho5.onrender.com/districts"
+        );
+        const cities = await axios.get(
+          "https://location-api-0ho5.onrender.com/cities"
+        );
+        setLocation({
+          wards: wards.data,
+          districts: districts.data,
+          cities: cities.data,
+        });
+      } catch (error) {
+        notification.error({
+          message: "Lỗi tải dữ liệu địa điểm",
+          description: error.message,
+        });
+      } finally {
+        setLoading(false);
+      }
     };
     getLocation();
   }, []);
 
   useEffect(() => {
-    if (userInfo.data.id) {
+    if (userInfo?.data?.id) {
       checkoutForm.resetFields();
     }
-  }, [userInfo.data.id]);
+  }, [userInfo?.data?.id, checkoutForm]);
 
-  const next = () => {
-    setCurrent(current + 1);
-  };
+  const next = useCallback(() => {
+    setCurrent((prevCurrent) => prevCurrent + 1);
+  }, []);
 
-  const prev = () => {
-    setCurrent(current - 1);
-  };
+  const prev = useCallback(() => {
+    setCurrent((prevCurrent) => prevCurrent - 1);
+  }, []);
 
   const columns = [
     {
@@ -91,15 +99,20 @@ function CheckoutPage() {
       render: (value) => (
         <Image
           preview={false}
-          src={value}
+          src={value?.absoluteUrl}  // Lấy URL từ thuộc tính absoluteUrl trong đối tượng image
           width={70}
           height={70}
           style={{ objectFit: "cover" }}
         />
       ),
     },
-    { title: "Tên sản phẩm", dataIndex: "name", key: "name" },
-    { title: "Size", dataIndex: "size", key: "size" },
+    { title: "Tên sản phẩm", dataIndex: "productName", key: "productName" },
+    { 
+      title: "Nhãn hiệu", 
+      dataIndex: "brand.categoryName", 
+      key: "brand.categoryName",
+      render: (text, record) => record.brand?.categoryName,
+    },
     {
       title: "Giá",
       dataIndex: "price",
@@ -115,12 +128,12 @@ function CheckoutPage() {
     },
   ];
 
-  const data = cartList.data.map((cartItem, cartIndex) => {
-    totalPrice = totalPrice + cartItem.price * cartItem.count;
+  const data = cartList?.data?.map((cartItem, cartIndex) => {
+    totalPrice += cartItem.price * cartItem.count;
     return {
       key: cartIndex,
       ...cartItem,
-      size: cartItem.option.size ? cartItem.option.size : "mặc định",
+      size: cartItem.option?.size || "mặc định",
       totalPrice: cartItem.price * cartItem.count,
       description: (
         <div>
@@ -141,45 +154,40 @@ function CheckoutPage() {
                   cartItem.color === "multiColor"
                     ? "#ff514e"
                     : cartItem.color === "ffffff"
-                    ? "purple"
-                    : `#${cartItem.color}`
+                      ? "purple"
+                      : `#${cartItem.color}`
                 }
               >
-                {COLOR_MENU.find((color) => color.code === cartItem.color).name}
+                {COLOR_MENU.find((color) => color.code === cartItem.color)?.name}
               </Tag>
             </span>
           </Space>
         </div>
       ),
     };
-  });
+  }) || [];
 
-  const handleChageCity = (value) => {
-    setLocationSelect({
-      ...locationSelect,
-      city: value,
-    });
-  };
-  const handleChageDistrict = (value) => {
-    setLocationSelect({
-      ...locationSelect,
-      district: value,
-    });
-  };
-  const handleChageWard = (value) => {
-    setLocationSelect({
-      ...locationSelect,
-      ward: value,
-    });
-  };
+  const handleChangeCity = useCallback((value) => {
+    setLocationSelect((prev) => ({ ...prev, city: value }));
+  }, []);
 
-  function handleOrder(values, checkoutInfo, paymentID = "") {
-    cartList.data?.forEach((cartItem) => {
-      let indexProductNew = productList.data?.findIndex(
+  const handleChangeDistrict = useCallback((value) => {
+    setLocationSelect((prev) => ({ ...prev, district: value }));
+  }, []);
+
+  const handleChangeWard = useCallback((value) => {
+    setLocationSelect((prev) => ({ ...prev, ward: value }));
+  }, []);
+
+  const handleOrder = useCallback((values, checkoutInfo, paymentID = "") => {
+    if (!cartList?.data) return;
+
+    cartList.data.forEach((cartItem) => {
+      const indexProductNew = productList?.data?.findIndex(
         (productnew) => productnew.id === cartItem.productId
       );
       if (indexProductNew !== -1) {
-        let productItemNew = productList?.data[indexProductNew];
+        const productItemNew = productList?.data[indexProductNew];
         dispatch(
           editProductAction({
             id: productItemNew.id,
@@ -194,22 +202,20 @@ function CheckoutPage() {
 
     dispatch(
       orderProductAction({
-        id: userInfo.data.id,
+        id: userInfo?.data?.id,
         data: {
-          userId: userInfo.data.id,
+          userId: userInfo?.data?.id,
           name: values.name,
           email: values.email,
           phoneNumber: values.phoneNumber,
           address:
             values.address +
             " - " +
-            location.wards.find((ward) => ward.code === values.ward).name +
+            location?.wards.find((ward) => ward.code === values.ward)?.name +
             " - " +
-            location.districts.find(
-              (district) => district.code === values.district
-            ).name +
+            location?.districts.find((district) => district.code === values.district)?.name +
             " - " +
-            location.cities.find((city) => city.code === values.city).name,
+            location?.cities.find((city) => city.code === values.city)?.name,
           products: cartList.data,
           totalPrice:
             cartList.orderInfo.total !== 0
@@ -221,12 +227,12 @@ function CheckoutPage() {
         },
       })
     );
-    // next();
+
     notification.success({
       message: "Đặt hàng thành công",
       description: "Cảm ơn quý khách đã mua hàng.",
     });
-  }
+  }, [cartList, productList, userInfo, location, totalPrice, dispatch]);
 
   const tranSuccess = async (payment) => {
     const { paymentID } = payment;
@@ -247,12 +253,12 @@ function CheckoutPage() {
           userInfo={userInfo}
           columns={columns}
           data={data}
-          orderInfo={cartList.orderInfo}
-          handleChageCity={handleChageCity}
-          handleChageDistrict={handleChageDistrict}
+          orderInfo={cartList?.orderInfo}
+          handleChangeCity={handleChangeCity}
+          handleChangeDistrict={handleChangeDistrict}
           locationSelect={locationSelect}
           totalPrice={totalPrice}
-          handleChageWard={handleChageWard}
+          handleChangeWard={handleChangeWard}
           location={location}
           next={next}
         />
@@ -268,7 +274,7 @@ function CheckoutPage() {
           columns={columns}
           data={data}
           confirmValues={confirmValues}
-          orderInfo={cartList.orderInfo}
+          orderInfo={cartList?.orderInfo}
           totalPrice={totalPrice}
           location={location}
           handleOrder={handleOrder}
