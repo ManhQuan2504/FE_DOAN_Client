@@ -1,7 +1,10 @@
+// Payment.js
 import { Button, Row, List, Table, Card } from "antd";
-import React from "react";
-import PaypalButton from "./PaypalButton";
+import React, { useEffect, useState } from "react";
+import PaypalButton from "./PaypalButton-v2";
 import * as Style from "../../style";
+import axios from "axios";
+
 function Payment({
   tranSuccess,
   prev,
@@ -11,32 +14,55 @@ function Payment({
   location,
   columns,
   data,
+  checkoutForm,
   handleOrder,
   orderInfo,
+  paypalCreatOrder,
 }) {
   const dataList = [
-    `Tên khách hàng: ${confirmValues.name}`,
+    `Tên khách hàng: ${confirmValues.customerName}`,
     `Email: ${confirmValues.email}`,
     `Số điện thoại: ${confirmValues.phoneNumber}`,
-    `Địa chỉ: ${confirmValues.address} - ${
-      location.wards.find((ward) => ward.code === confirmValues.ward).name
-    } - ${
-      location.districts.find(
-        (district) => district.code === confirmValues.district
-      ).name
-    } - ${
-      location.cities.find((city) => city.code === confirmValues.city).name
+    `Địa chỉ: ${confirmValues.address} - ${location.wards.find((ward) => ward.code === confirmValues.ward).name
+    } - ${location.districts.find(
+      (district) => district.code === confirmValues.district
+    ).name
+    } - ${location.cities.find((city) => city.code === confirmValues.city).name
     }`,
     `Tổng tiền phải thanh toán:
       ${totalPrice.toLocaleString()}₫
-      ${
-        orderInfo.percent !== 0
-          ? `nhập mã giảm ${
-              orderInfo.percent * 100
-            }% giá còn ${orderInfo.total.toLocaleString()}₫`
-          : ""
-      }`,
+      ${orderInfo.percent !== 0
+      ? `nhập mã giảm ${orderInfo.percent * 100
+      }% giá còn ${orderInfo.total.toLocaleString()}₫`
+      : ""
+    }`,
   ];
+
+  const [sdkReady, setSdkReady] = useState(false);
+  const addPaypalScript = async () => {
+    try {
+      const { data } = await axios.get("http://localhost:1810/payments");
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = `https://www.paypal.com/sdk/js?client-id=${data.data}&currency=USD`;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      };
+      document.body.appendChild(script);
+    } catch (error) {
+      console.error("Error loading PayPal script:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!window.paypal) {
+      addPaypalScript();
+    } else {
+      setSdkReady(true);
+    }
+  }, []);
+
   return (
     <div>
       <Button onClick={() => prev()}>Quay lại</Button>
@@ -83,7 +109,11 @@ function Payment({
             Thanh toán khi nhận hàng
           </Button>
         </div>
-        <PaypalButton total={totalPrice} tranSuccess={tranSuccess} />
+        {sdkReady ? (
+          <PaypalButton total={totalPrice} tranSuccess={tranSuccess} paypalCreatOrder={paypalCreatOrder} confirmValues={confirmValues}/>
+        ) : (
+          <p>Loading PayPal...</p>
+        )}
       </div>
     </div>
   );

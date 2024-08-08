@@ -28,7 +28,6 @@ const cartReducer = createReducer(initialState, {
 
   [SUCCESS(USER_ACTION.GET_USER_INFO)]: (state, action) => {
     const { data } = action.payload;
-    console.log("🚀 ~ !!!!!!!!!!![SUCCESS ~ data:", data)
     return {
       ...state,
       cartList: {

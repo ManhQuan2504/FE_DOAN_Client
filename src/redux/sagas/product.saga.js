@@ -6,7 +6,6 @@ import { SERVER_API_URL } from "./apiUrl";
 import { PRODUCT_LIMIT } from "../../constants/product";
 
 function* getProductListSaga(action) {
-  console.log("🚀 ~ function*getProductListSaga ~ action:", action)
   try {
     const page = action.payload?.page;
     const sortValue = action.payload?.sortValue;
@@ -104,7 +103,6 @@ function* getProductListSaga(action) {
       },
     });
 
-    console.log("🚀 ~ function*getProductListSaga ~ result:", result)
     // const productData = result?.data?.dataObject.map((productItem) => {
     //   return {
     //     ...productItem,
@@ -150,7 +148,6 @@ function* getProductDetailSaga(action) {
         _expand: ["department", "category", "type"],
       },
     });
-    console.log("🚀 ~ function*getProductDetailSaga ~ result:", result)
 
     // const productDetailData = {
     //   ...result.data,

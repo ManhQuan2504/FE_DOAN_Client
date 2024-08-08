@@ -53,13 +53,9 @@ function ProductInfo({
   commentList,
   productID,
 }) {
-  console.log("🚀 ~ productDetail:", productDetail)
-  console.log("🚀 ~ userInfo:", userInfo)
   const { wishList } = useSelector((state) => state.wishlistReducer);
   const { cartList } = useSelector((state) => state.cartReducer);
-  console.log("🚀 ~ cartList:", cartList)
 
-  console.log(cartList.data);
   const [swiper, setSwiper] = useState(null);
   const [productCount, setProductCount] = useState(1);
   const [viewMore, setViewMore] = useState(false);
@@ -155,8 +151,6 @@ function ProductInfo({
       });
     }
     if (optionSelected.id) {
-      console.log("🚀 ~ handleAddToCart ~ optionSelected:", optionSelected)
-      console.log("🚀 ~ handleAddToCart ~ cartList:", cartList)
 
       const existOptionIndex = cartList.data?.findIndex(
         (item) => item.option.id === optionSelected.id
@@ -218,11 +212,9 @@ function ProductInfo({
         );
       }
     } else {
-      console.log("🚀 ~ handleAddToCart ~ cartList:", cartList)
       const existProductIndex = cartList.data?.findIndex(
         (item) => item.productId === parseInt(productID)
       );
-      console.log("🚀 ~ handleAddToCart ~ existProductIndex:", existProductIndex)
 
       if (existProductIndex !== -1) {
         const newCart = [...cartList.data];
@@ -243,7 +235,6 @@ function ProductInfo({
           department: productDetail.data.department.description,
           option: {},
         });
-        console.log("🚀 ~ handleAddToCart ~ newCart:", newCart)
         dispatch(
           addToCartAction({
             userId: userInfo.data.id,
@@ -411,7 +402,6 @@ function ProductInfo({
     );
     formComment.resetFields();
   }
-  console.log("🚀 ~ cartList:", cartList)
 
   let maxCount = cartList?.data?.length > 0
     ? cartList.data.find((cartitem) => cartitem?.productId === parseInt(productID))

@@ -41,7 +41,6 @@ const productReducer = createReducer(initialState, {
   },
   [SUCCESS(PRODUCT_ACTION.GET_PRODUCT_LIST)]: (state, action) => {
     const { data, page, more, total } = action.payload;
-    console.log("🚀 ~ [SUCCESS ~ action:", action)
     if (more) {
       return {
         ...state,

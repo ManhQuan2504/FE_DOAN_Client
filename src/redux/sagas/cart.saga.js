@@ -7,8 +7,6 @@ import { SERVER_API_URL } from "./apiUrl";
 function* addToCartSaga(action) {
   try {
     const { userId, carts } = action.payload;
-    console.log("🚀 ~ function*addToCartSaga ~ carts:", carts)
-    console.log("🚀 ~ function*addToCartSaga ~ userId:", userId)
     // const result = yield axios({
     //   method: "PUT",
     //   url: `${SERVER_API_URL}/v1/customers/${userId}`,

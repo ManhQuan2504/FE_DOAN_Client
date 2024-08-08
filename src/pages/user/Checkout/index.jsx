@@ -14,6 +14,8 @@ import Hero from "../../../components/Hero";
 import { COLOR_MENU } from "../../../constants/color";
 import Confirm from "./components/Comfirm";
 import Payment from "./components/Payment";
+import { generateAutoCode } from "../../../helper/functionHelper";
+import { apiCreate } from "../../../helper/helperServices";
 
 const { Step } = Steps;
 
@@ -52,18 +54,18 @@ function CheckoutPage() {
       setLoading(true);
       try {
         const wards = await axios.get(
-          "https://location-api-0ho5.onrender.com/wards"
+          "http://localhost/v1/wards?modelName=wards"
         );
         const districts = await axios.get(
-          "https://location-api-0ho5.onrender.com/districts"
+          "http://localhost/v1/districts?modelName=districts"
         );
         const cities = await axios.get(
-          "https://location-api-0ho5.onrender.com/cities"
+          "http://localhost/v1/cities?modelName=cities"
         );
         setLocation({
-          wards: wards.data,
-          districts: districts.data,
-          cities: cities.data,
+          wards: wards.data.dataObject,
+          districts: districts.data.dataObject,
+          cities: cities.data.dataObject,
         });
       } catch (error) {
         notification.error({
@@ -107,9 +109,9 @@ function CheckoutPage() {
       ),
     },
     { title: "Tên sản phẩm", dataIndex: "productName", key: "productName" },
-    { 
-      title: "Nhãn hiệu", 
-      dataIndex: "brand.categoryName", 
+    {
+      title: "Nhãn hiệu",
+      dataIndex: "brand.categoryName",
       key: "brand.categoryName",
       render: (text, record) => record.brand?.categoryName,
     },
@@ -180,6 +182,7 @@ function CheckoutPage() {
   }, []);
 
   const handleOrder = useCallback((values, checkoutInfo, paymentID = "") => {
+    console.log("🚀 ~ handleOrder ~ cartList:", cartList)
     if (!cartList?.data) return;
 
     cartList.data.forEach((cartItem) => {
@@ -234,6 +237,46 @@ function CheckoutPage() {
     });
   }, [cartList, productList, userInfo, location, totalPrice, dispatch]);
 
+  const paypalCreatOrder = async () => {
+    try {
+      const autoCode = generateAutoCode("DH");
+      const { carts, ...infUser } = userInfo?.data?.data || {};
+      const productList = cartList?.data?.map((productItem) => {
+        const { quantity, ...rest } = productItem;
+        return rest;
+      }) || [];
+  
+      const shipTo = `${confirmValues.address} - ${location.wards.find(ward => ward.code === confirmValues.ward)?.name} - ${location.districts.find(district => district.code === confirmValues.district)?.name} - ${location.cities.find(city => city.code === confirmValues.city)?.name}`;
+      
+      const data = {
+        orderNumber: autoCode,
+        customer: infUser,
+        productList,
+        orderDate: new Date(),
+        orderState: "Chờ phê duyệt",
+        paymentMethod: "paypal",
+        shipTo,
+        totalAmount: totalPrice,
+      };
+  
+      console.log("🚀 ~ paypalCreatOrder ~ data:", data);
+  
+      const formData = {
+        modelName: "orders",
+        data
+      };
+      
+      const { dataObject } = await apiCreate(formData);
+      console.log("🚀 ~ paypalCreatOrder ~ dataObject:", dataObject);
+    } catch (error) {
+      notification.error({
+        message: "Không thể tạo đơn hàng",
+        description: error.message,
+      });
+    }
+  };
+  
+
   const tranSuccess = async (payment) => {
     const { paymentID } = payment;
     handleOrder(confirmValues, "paypal", paymentID);
@@ -275,9 +318,11 @@ function CheckoutPage() {
           data={data}
           confirmValues={confirmValues}
           orderInfo={cartList?.orderInfo}
+          checkoutForm={checkoutForm}
           totalPrice={totalPrice}
           location={location}
           handleOrder={handleOrder}
+          paypalCreatOrder={paypalCreatOrder}
         />
       ),
     },

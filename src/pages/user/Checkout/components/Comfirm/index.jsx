@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   Row,
@@ -6,8 +6,6 @@ import {
   Input,
   Button,
   Form,
-  Space,
-  Table,
   Select,
 } from "antd";
 import * as Style from "../../style";
@@ -28,18 +26,27 @@ function Confirm({
   orderInfo,
   next,
 }) {
-  const confirm =
-    Object.keys(confirmValues).length === 0
-      ? {}
-      : {
-          address: confirmValues.address,
-          city: confirmValues.city,
-          district: confirmValues.district,
-          email: confirmValues.email,
-          name: confirmValues.name,
-          phoneNumber: confirmValues.phoneNumber,
-          ward: confirmValues.ward,
-        };
+  const confirm = {
+    address: confirmValues.address || userInfo?.data?.data?.address || '',
+    city: confirmValues.city || '',
+    district: confirmValues.district || '',
+    ward: confirmValues.ward || '',
+    email: confirmValues.email || userInfo?.data?.data?.email || '',
+    customerName: confirmValues.customerName || userInfo?.data?.data?.customerName || '',
+    phoneNumber: confirmValues.phoneNumber || userInfo?.data?.data?.phoneNumber || '',
+  };
+
+  const handleValuesChange = (changedValues, allValues) => {
+    setConfirmValues(allValues); // Cập nhật confirmValues mỗi khi form thay đổi
+    console.log('Changed Values:', changedValues);
+    console.log('All Values:', allValues);
+  };
+
+  useEffect(() => {
+    // Cập nhật giá trị ban đầu của form khi component được mount
+    checkoutForm.setFieldsValue(confirm);
+  }, [confirm, checkoutForm]);
+
   return (
     <div>
       <h2 style={{ textAlign: "center", margin: "15px 0 30px" }}>
@@ -49,15 +56,12 @@ function Confirm({
         form={checkoutForm}
         name="basic"
         layout="vertical"
-        initialValues={{
-          name: userInfo?.data?.data?.customerName,
-          email: userInfo?.data?.data?.email,
-          ...confirm,
-        }}
+        initialValues={confirm}
         onFinish={(values) => {
           setConfirmValues(values);
           next();
         }}
+        onValuesChange={handleValuesChange}
       >
         <Card title="Thông tin đơn hàng" size="small">
           <Style.CustomTable
@@ -79,7 +83,7 @@ function Confirm({
             {orderInfo.percent !== 0 &&
               `(nhập mã giảm ${orderInfo.percent * 100}% giá còn ${
                 orderInfo.total.toLocaleString() + "₫"
-              }`}
+              })`}
           </strong>
         </Card>
         <Card
@@ -164,7 +168,7 @@ function Confirm({
                 >
                   {location.districts
                     .filter(
-                      (district, districtIndex) =>
+                      (district) =>
                         district.parentcode === locationSelect.city
                     )
                     .map((districtItem, districtIndex) => {
@@ -198,7 +202,7 @@ function Confirm({
                 >
                   {location.wards
                     .filter(
-                      (ward, wardIndex) =>
+                      (ward) =>
                         ward.parentcode === locationSelect.district
                     )
                     .map((wardItem, wardIndex) => {

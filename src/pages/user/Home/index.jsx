@@ -18,6 +18,7 @@ import {
 } from "../../../redux/actions";
 import Loading from "../../../components/Loading";
 import { TITLE } from "../../../constants/title";
+import { notification } from "antd";
 
 function HomePage() {
   document.title = TITLE.HOME;
@@ -31,6 +32,18 @@ function HomePage() {
     img.src = register;
     dispatch(getProductListAction({ loadHome: true }));
     dispatch(getBlogListAction({ page: 1 }));
+
+    const paymentSuccess = localStorage.getItem('paymentSuccess');
+    if (paymentSuccess) {
+      const { message, description } = JSON.parse(paymentSuccess);
+      notification.success({
+        message: message,
+        description: description,
+      });
+
+      // Xóa thông tin sau khi hiển thị thông báo
+      localStorage.removeItem('paymentSuccess');
+    }
   }, []);
   console.log("🚀 ~ HomePage ~ productList:", productList)
 

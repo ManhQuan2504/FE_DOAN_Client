@@ -22,6 +22,7 @@ import { TITLE } from "../../../constants/title";
 function ProfileAdminPage() {
   document.title = TITLE.USER_PROFILE;
   const { userInfo } = useSelector((state) => state.userReducer);
+  console.log("🚀 ~ ProfileAdminPage ~ userInfo:", userInfo)
   const { responseAction } = useSelector((state) => state.userReducer);
   const { page } = useParams();
   const dispatch = useDispatch();
@@ -162,7 +163,7 @@ function ProfileAdminPage() {
                           src={
                             avatar
                               ? URL.createObjectURL(avatar)
-                              : userInfo.data.avatar
+                              : userInfo.data.data.avatar
                           }
                         />
                       }

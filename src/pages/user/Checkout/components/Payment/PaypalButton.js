@@ -7,6 +7,7 @@ export default class PaypalButton extends React.Component {
       // Congratulation, it came here means everything's fine!
       console.log("The payment was succeeded!", payment);
       // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
+      console.log("🚀 ~ PaypalButton ~ onSuccess ~ payment:", payment)
       this.props.tranSuccess(payment);
     };
 
@@ -30,7 +31,7 @@ export default class PaypalButton extends React.Component {
 
     const client = {
       sandbox:
-        "AWVcLZJ292uQz0fIcyfz9-oCZKhPrDP8sA9xZWyzvmy9Rxwo97IP_S25GRTfLTyafg_JZrGDQeD7JsKA",
+        "AQsnAjLCTUbPkxT-KV-D-IsUJJXdjqpTCjtoESa7jeQulpzY8sbjPLZ33G_9u5NWTr9wwtNFaYqGPC4A",
       production: "YOUR-PRODUCTION-APP-ID",
     };
     // In order to get production's app-ID, you will have to send your app to Paypal for approval first
