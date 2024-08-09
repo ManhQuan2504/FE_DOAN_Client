@@ -55,6 +55,7 @@ function ProductInfo({
 }) {
   const { wishList } = useSelector((state) => state.wishlistReducer);
   const { cartList } = useSelector((state) => state.cartReducer);
+  console.log("🚀 ~ cartList:", cartList)
 
   const [swiper, setSwiper] = useState(null);
   const [productCount, setProductCount] = useState(1);
@@ -151,13 +152,12 @@ function ProductInfo({
       });
     }
     if (optionSelected.id) {
-
       const existOptionIndex = cartList.data?.findIndex(
         (item) => item.option.id === optionSelected.id
       );
       if (existOptionIndex !== -1) {
-        const newCartList = [...cartList.data];
-        newCartList?.splice(existOptionIndex, 1, {
+        const newCartList = Array.isArray(cartList.data) ? [...cartList.data] : [];
+        newCartList.splice(existOptionIndex, 1, {
           productId: parseInt(productID),
           count:
             cartList.data[existOptionIndex].count + productCount >=
@@ -197,7 +197,6 @@ function ProductInfo({
                 price: productDetail.data.price,
                 color: productDetail.data.color,
                 image: productDetail.data.images[0],
-                category: productDetail.data.category.name,
                 quantity: productDetail.data.quantity,
                 type: productDetail.data.type.name,
                 department: productDetail.data.department.description,
@@ -215,10 +214,10 @@ function ProductInfo({
       const existProductIndex = cartList.data?.findIndex(
         (item) => item.productId === parseInt(productID)
       );
-
+  
       if (existProductIndex !== -1) {
-        const newCart = [...cartList.data];
-        newCart?.splice(existProductIndex, 1, {
+        const newCart = Array.isArray(cartList?.data) ? [...cartList?.data] : [];
+        newCart.splice(existProductIndex, 1, {
           productId: parseInt(productID),
           count:
             cartList.data[existProductIndex].count + productCount >=

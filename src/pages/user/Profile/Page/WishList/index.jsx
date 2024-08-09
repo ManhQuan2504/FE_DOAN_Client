@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-
 import { Row, Col, Button, Card } from "antd";
 import history from "../../../../../utils/history";
 import { TITLE } from "../../../../../constants/title";
@@ -19,7 +18,7 @@ function Wishlist() {
     img.src = empty;
   }, []);
 
-  function renderWishList(params) {
+  function renderWishList() {
     return wishList?.data?.map((wishItem, wishIndex) => {
       return (
         <Col
@@ -47,7 +46,7 @@ function Wishlist() {
 
   return (
     <>
-      {wishList.data.length === 0 ? (
+      {wishList?.data?.length === 0 ? (
         <Style.Empty>
           <h2>Danh sách yêu thích trống</h2>
           <img src={empty} alt="" />

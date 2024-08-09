@@ -39,6 +39,7 @@ function RegisterPage() {
           email: values.email,
           password: values.password,
           gender: values.gender,
+          phoneNumber: values.phoneNumber,
           carts: [],
           wishlist: [],
         },
@@ -74,7 +75,17 @@ function RegisterPage() {
               label="Email"
               name="email"
               rules={[
-                { required: true, message: "Bạn chưa nhập email ahihi!" },
+                { required: true, message: "Bạn chưa nhập email!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              label="Số điện thoại"
+              name="phoneNumber"
+              rules={[
+                { required: true, message: "Bạn chưa nhập SĐT!" },
               ]}
             >
               <Input />
@@ -85,7 +96,7 @@ function RegisterPage() {
               name="password"
               rules={[
                 { required: true, message: "Bạn chưa nhập mật khẩu!" },
-                { min: 3, max: 16, message: "Mật khẩu phải từ 3-16 kí tự" },
+                { min: 6, max: 16, message: "Mật khẩu phải từ 3-16 kí tự" },
               ]}
             >
               <Input.Password />

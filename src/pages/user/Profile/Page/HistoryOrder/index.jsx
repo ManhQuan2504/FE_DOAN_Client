@@ -10,9 +10,14 @@ const { Title } = Typography;
 function HistoryOrder() {
   document.title = TITLE.HISTORY_ORDER;
   const { orderList } = useSelector((state) => state.orderReducer);
+  console.log("🚀 ~ HistoryOrder ~ orderList:", orderList);
 
   const columns = [
-    { title: "Tên", dataIndex: "name", key: "name" },
+    {
+      title: "Họ tên",
+      dataIndex: "customerName",
+      key: "customerName",
+    },
     {
       title: "Địa chỉ",
       dataIndex: "address",
@@ -25,14 +30,19 @@ function HistoryOrder() {
       title: "Tổng tiền",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (value) => `${value.toLocaleString()}đ`,
+      render: (value) => {
+        const formattedValue = typeof value === 'number' ? value.toLocaleString() : 'N/A';
+        return `${formattedValue}đ`;
+      },
     },
     {
       title: "Thanh toán",
       dataIndex: "checkoutInfo",
       key: "checkoutInfo",
-      render: (value) =>
-        value === "paypal" ? "Đã thanh toán (paypal)" : value.toUpperCase(),
+      render: (value) => {
+        const displayValue = value || 'Chưa xác định'; // Cung cấp giá trị mặc định nếu value là undefined
+        return displayValue === "paypal" ? "Đã thanh toán (paypal)" : displayValue.toUpperCase();
+      },
     },
     {
       title: "Trạng thái",
@@ -52,33 +62,44 @@ function HistoryOrder() {
     },
   ];
 
-  const data = orderList.data?.map((orderItem, orderIndex) => {
-    return {
-      key: orderIndex,
-      ...orderItem,
-      description: orderItem.products.map((product, productIndex) => (
-        <div key={productIndex}>
-          <Space size={15} wrap align="center">
-            <Image
-              width={50}
-              height={50}
-              style={{ objectFit: "cover" }}
-              preview={false}
-              src={product.image}
-            />
-            <span>Tên sản phẩm: {product.name}</span>
-            {product.option.size && <span>Size: {product.option.size}</span>}
-            <span>Số lượng: {product.count}</span>
-          </Space>
-        </div>
-      )),
-    };
-  });
+  // Chỉnh sửa để phù hợp với cấu trúc dữ liệu
+  const data = orderList?.data?.length
+    ? orderList.data.map((orderItem, orderIndex) => {
+        console.log("🚀 ~ orderItem:", orderItem);
+        return {
+          key: orderIndex,
+          customerName: orderItem.customer.customerName, // Lấy tên khách hàng
+          address: orderItem.shipTo, // Lấy địa chỉ khách hàng
+          phoneNumber: orderItem.customer.phoneNumber, // Lấy số điện thoại khách hàng
+          totalPrice: orderItem.productList.reduce((acc, item) => acc + (item.price * item.count), 0), // Tính tổng tiền
+          checkoutInfo: orderItem.checkoutInfo || 'Chưa xác định',
+          status: orderItem.status || 'waiting', // Đảm bảo có giá trị mặc định cho trạng thái
+          description: orderItem.productList.map((product, productIndex) => (
+            <div key={productIndex}>
+              <Space size={15} wrap align="center">
+                <Image
+                  width={50}
+                  height={50}
+                  style={{ objectFit: "cover" }}
+                  preview={false}
+                  src={product.image?.absoluteUrl}
+                />
+                <span>Tên sản phẩm: {product.productName}</span>
+                {product.option?.size && <span>Size: {product.option.size}</span>}
+                <span>Số lượng: {product.count}</span>
+              </Space>
+            </div>
+          )),
+        };
+      })
+    : [];
+
+  console.log("🚀 ~ HistoryOrder ~ data:", data);
 
   return (
     <Style.HistoryOrder>
       <h2>Lịch sử mua hàng</h2>
-      {orderList.data?.length > 0 ? (
+      {orderList?.data?.length > 0 ? (
         <Style.CustomTable
           bordered
           size="small"
@@ -86,7 +107,7 @@ function HistoryOrder() {
           pagination={false}
           expandable={{
             expandedRowRender: (record) => (
-              <p style={{ margin: 0 }}>{record.description}</p>
+              <div>{record.description}</div> // Đảm bảo description là HTML hợp lệ
             ),
             rowExpandable: (record) => record.name !== "Not Expandable",
           }}

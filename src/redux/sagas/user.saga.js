@@ -3,6 +3,7 @@ import { put, takeEvery, call } from "redux-saga/effects";
 import axios from "axios";
 import { REQUEST, SUCCESS, FAILURE, USER_ACTION } from "../constants";
 import { SERVER_API_URL } from "./apiUrl";
+import { apiGetList, apiGetList2 } from "../../helper/helperServices";
 
 import history from "../../utils/history";
 
@@ -36,7 +37,7 @@ function* loginSaga(action) {
     // if (result.data.dataObject.role === "admin") {
     //   yield call(history.push, "/admin");
     // } else {
-      yield call(history.push, "/");
+    yield call(history.push, "/");
     // }
   } catch (e) {
     // Bắt và xử lý lỗi
@@ -113,16 +114,30 @@ function* getUserInfoSaga(action) {
         _embed: "orders",
       },
     });
+
+    const data = {
+      modelName: "orders",
+      byField: JSON.stringify({ customer: id })  // Chuyển đối tượng thành chuỗi JSON
+    };
+    console.log("🚀 ~ function*getUserInfoSaga ~ data:", data)
+
+    const orderUser = yield apiGetList2(data);
+    console.log("🚀 ~ function*getUserInfoSaga ~ orderUser:", orderUser)
+    result.data.dataObject.orderList = orderUser.dataObject;
+
     yield put({
       type: SUCCESS(USER_ACTION.GET_USER_INFO),
       payload: {
-        data: result.data,
+        data: {
+          ...result.data,
+        },
       },
     });
   } catch (e) {
     yield put({ type: FAILURE(USER_ACTION.GET_USER_INFO), payload: e.message });
   }
 }
+
 function* getUserListSage(action) {
   try {
     const searchKey = action.payload?.searchKey;

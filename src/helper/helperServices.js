@@ -26,6 +26,25 @@ export const apiGetList = async (data) => {
   }
 }
 
+export const apiGetList2 = async (data) => {
+  const { modelName, byField, ...rest } = data;
+  const byFieldObject = JSON.parse(byField);
+  // Tạo chuỗi truy vấn từ đối tượng `rest` và `byField`
+  const queryString = Object.keys({ ...rest, byField: JSON.stringify(byFieldObject) })
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(byFieldObject))}`)
+    .join('&');
+
+  console.log(`🚀 ~ apiGetList ~ queryString: ${queryString}`);
+
+  try {
+    const res = await axios.get(`http://localhost/v1/${modelName}?modelName=${modelName}&${queryString}`);
+    return res.data;
+  } catch (error) {
+    console.error('There was an error making the request:', error);
+    return error;
+  }
+};
+
 export const apiGetById = async (data) => {
   const { modelName, id, field = [] } = data;
 

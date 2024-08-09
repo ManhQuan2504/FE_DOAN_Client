@@ -27,6 +27,18 @@ const orderReducer = createReducer(initialState, {
       ...state,
       orderList: {
         ...state.orderList,
+        data: data.dataObject.orderList,
+      },
+    };
+  },
+
+  [SUCCESS(ORDER_ACTION.GET_USER_ORDER_LIST)]: (state, action) => {
+    const { data } = action.payload;
+    console.log("🚀 ~ 1[SUCCESS ~ data:", data)
+    return {
+      ...state,
+      orderList: {
+        ...state.orderList,
         data: data.orders,
       },
     };

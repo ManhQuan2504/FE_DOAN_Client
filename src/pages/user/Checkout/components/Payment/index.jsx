@@ -1,5 +1,4 @@
-// Payment.js
-import { Button, Row, List, Table, Card } from "antd";
+import { Button, Row, List, Card } from "antd";
 import React, { useEffect, useState } from "react";
 import PaypalButton from "./PaypalButton-v2";
 import * as Style from "../../style";
@@ -23,11 +22,11 @@ function Payment({
     `Tên khách hàng: ${confirmValues.customerName}`,
     `Email: ${confirmValues.email}`,
     `Số điện thoại: ${confirmValues.phoneNumber}`,
-    `Địa chỉ: ${confirmValues.address} - ${location.wards.find((ward) => ward.code === confirmValues.ward).name
+    `Địa chỉ: ${confirmValues.address} - ${location.wards.find((ward) => ward.code === confirmValues.ward)?.name
     } - ${location.districts.find(
       (district) => district.code === confirmValues.district
-    ).name
-    } - ${location.cities.find((city) => city.code === confirmValues.city).name
+    )?.name
+    } - ${location.cities.find((city) => city.code === confirmValues.city)?.name
     }`,
     `Tổng tiền phải thanh toán:
       ${totalPrice.toLocaleString()}₫
@@ -110,7 +109,12 @@ function Payment({
           </Button>
         </div>
         {sdkReady ? (
-          <PaypalButton total={totalPrice} tranSuccess={tranSuccess} paypalCreatOrder={paypalCreatOrder} confirmValues={confirmValues}/>
+          <PaypalButton
+            total={totalPrice}
+            tranSuccess={tranSuccess}
+            paypalCreatOrder={paypalCreatOrder}
+            confirmValues={confirmValues}
+          />
         ) : (
           <p>Loading PayPal...</p>
         )}

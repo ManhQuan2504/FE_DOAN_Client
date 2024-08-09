@@ -15,7 +15,7 @@ import { COLOR_MENU } from "../../../constants/color";
 import Confirm from "./components/Comfirm";
 import Payment from "./components/Payment";
 import { generateAutoCode } from "../../../helper/functionHelper";
-import { apiCreate } from "../../../helper/helperServices";
+import { apiCreate, apiUpdate } from "../../../helper/helperServices";
 
 const { Step } = Steps;
 
@@ -237,7 +237,7 @@ function CheckoutPage() {
     });
   }, [cartList, productList, userInfo, location, totalPrice, dispatch]);
 
-  const paypalCreatOrder = async () => {
+  const paypalCreatOrder = async (dataPayment) => {
     try {
       const autoCode = generateAutoCode("DH");
       const { carts, ...infUser } = userInfo?.data?.data || {};
@@ -257,9 +257,8 @@ function CheckoutPage() {
         paymentMethod: "paypal",
         shipTo,
         totalAmount: totalPrice,
+        dataPayment,
       };
-  
-      console.log("🚀 ~ paypalCreatOrder ~ data:", data);
   
       const formData = {
         modelName: "orders",
@@ -267,7 +266,14 @@ function CheckoutPage() {
       };
       
       const { dataObject } = await apiCreate(formData);
-      console.log("🚀 ~ paypalCreatOrder ~ dataObject:", dataObject);
+
+      const userData = {
+        modelName: "customers",
+        id: userInfo?.data?.data?._id,
+        data: {carts: []},
+      }
+      const { dataClearCart } = await apiUpdate(userData);
+      console.log("🚀 ~ paypalCreatOrder ~ dataObject:", dataObject)
     } catch (error) {
       notification.error({
         message: "Không thể tạo đơn hàng",

@@ -28,10 +28,12 @@ function ProfileAdminPage() {
   const dispatch = useDispatch();
 
   const [avatar, setAvatar] = useState("");
+  console.log("🚀 ~ ProfileAdminPage ~ avatar:", avatar)
   const [visible, setVisible] = useState(false);
   const [activeMenu, setActiveMenu] = useState({
     menuItem: "user-info",
   });
+console.log(1232);
 
   const handleMenuItemClick = ({ key }) => {
     setActiveMenu({
@@ -132,6 +134,7 @@ function ProfileAdminPage() {
 
   function renderUserMenu() {
     return USER_MENU.map((menuItem, menuIndex) => {
+      console.log("🚀 ~ returnUSER_MENU.map ~ menuItem:", menuItem)
       return (
         <Menu.Item
           key={menuItem.key}

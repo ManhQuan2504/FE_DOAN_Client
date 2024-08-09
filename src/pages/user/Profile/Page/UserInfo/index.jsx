@@ -58,9 +58,10 @@ function UserInfo() {
   };
 
   const data = [
-    `Tên: ${userInfo.data?.name}`,
-    `Email: ${userInfo.data?.email}`,
-    `Giới tính: ${userInfo.data?.gender === "female" ? "Nữ" : "Nam"}`,
+    `Tên: ${userInfo?.data?.data?.customerName}`,
+    `Email: ${userInfo?.data?.data?.email}`,
+    `Giới tính: ${userInfo?.data?.data?.gender === "female" ? "Nữ" : "Nam"}`,
+    `Số điện thoại: ${userInfo.data?.data?.phoneNumber}`,
   ];
 
   return (

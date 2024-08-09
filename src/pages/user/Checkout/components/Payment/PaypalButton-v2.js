@@ -4,8 +4,8 @@ import { PayPalButton } from "react-paypal-button-v2";
 
 class PaypalButton extends React.Component {
   createOrder = (data, actions) => {
-    const { paypalCreatOrder, confirmValues } = this.props;
-    paypalCreatOrder(confirmValues, "paypal")
+    const { paypalCreatOrder, confirmValues } = this.props; // Destructure from props
+    // Create order in your backend and return the order ID
     return actions.order.create({
       purchase_units: [{
         amount: {
@@ -13,31 +13,22 @@ class PaypalButton extends React.Component {
           value: this.props.total.toString(),
         },
       }],
+    }).then((orderID) => {
+      // Call backend to create the order before returning the order ID
+      // paypalCreatOrder(confirmValues, "paypal"); // Call your function here
+      return orderID;
     });
   };
 
   onApprove = (data, actions) => {
+    const { paypalCreatOrder } = this.props; // Destructure from props
     return actions.order.capture().then((details) => {
-      notification.success({
-        message: "Thanh toán thành công",
-        description: "Transaction completed by " + details.payer.name.given_name,
-      });
-      // alert("Transaction completed by " + details.payer.name.given_name);
-      console.log("Transaction details:", details);
-      // return fetch("/paypal-transaction-complete", {
-      //   method: "post",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     orderID: data.orderID,
-      //   }),
-      // })
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     this.props.tranSuccess(data);
-      //   });
-      window.location.href = "/";
+      // notification.success({
+      //   message: "Thanh toán thành công",
+      //   description: "Transaction completed by " + details.payer.name.given_name,
+      // });
+      paypalCreatOrder(details);
+      // window.location.href = "/";
       localStorage.setItem('paymentSuccess', JSON.stringify({
         message: "Thanh toán thành công",
         description: "Transaction completed by " + details.payer.name.given_name,
@@ -62,8 +53,8 @@ class PaypalButton extends React.Component {
     const env = "sandbox"; // or 'production'
     const currency = "USD";
     const total = this.props.total;
-    const paypalCreatOrder = this.props.paypalCreatOrder;
     const confirmValues = this.props.confirmValues;
+
     return (
       <PayPalButton
         createOrder={this.createOrder}

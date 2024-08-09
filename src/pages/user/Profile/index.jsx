@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-
 import { Image, Row, Col, Menu, Avatar, Button, message, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "../../../styles/styles";
 import * as Icons from "@ant-design/icons";
-
 import * as Style from "./styles";
 import {
   editUserProfileAction,
@@ -100,15 +98,8 @@ function ProfilePage() {
   const inputFile = useRef(null);
 
   useEffect(() => {
-    let menuInfo = page;
     setActiveMenu({
-      menuItem: menuInfo,
-    });
-  }, []);
-  useEffect(() => {
-    let menuInfo = page;
-    setActiveMenu({
-      menuItem: menuInfo,
+      menuItem: page || "user-info",
     });
   }, [page]);
 
@@ -122,11 +113,11 @@ function ProfilePage() {
     const file = e.target.files[0];
     if (!file) {
       setVisible(false);
-      return message.error("Ảnh không tồn  tại");
+      return message.error("Ảnh không tồn tại");
     }
     if (file.size > 1024 * 1024) {
       setVisible(false);
-      return message.error("Ảnh không không được nặng quá 1mb");
+      return message.error("Ảnh không được nặng quá 1MB");
     }
     if (file.type !== "image/jpeg" && file.type !== "image/png") {
       setVisible(false);
@@ -136,35 +127,37 @@ function ProfilePage() {
   };
 
   const updateAvatar = async () => {
-    let media;
-    if (avatar) media = await ImageUpload([avatar]);
-    if (media) {
-      dispatch(
-        editUserProfileAction({
-          id: userInfo.data.id,
-          data: {
-            avatar: media[0].url,
-          },
-        })
-      );
-      setAvatar("");
-      setVisible(false);
+    if (avatar) {
+      const media = await ImageUpload([avatar]);
+      if (media) {
+        dispatch(
+          editUserProfileAction({
+            id: userInfo.data.id,
+            data: {
+              avatar: media[0].url,
+            },
+          })
+        );
+        setAvatar("");
+        setVisible(false);
+      }
     }
   };
 
   function renderUserMenu() {
-    return USER_MENU.map((menuItem, menuIndex) => {
-      return (
-        <Menu.Item
-          key={menuItem.key}
-          icon={menuItem.icon}
-          onClick={(e) => menuItem.action(e)}
-        >
-          {menuItem.title}
-        </Menu.Item>
-      );
-    });
+    return USER_MENU.map((menuItem) => (
+      <Menu.Item
+        key={menuItem.key}
+        icon={menuItem.icon}
+        onClick={(e) => menuItem.action(e)}
+      >
+        {menuItem.title}
+      </Menu.Item>
+    ));
   }
+
+  const avatarUrl = userInfo?.data?.data?.avatar || '';
+  const userName = userInfo?.data?.name || '';
 
   return (
     <>
@@ -188,14 +181,10 @@ function ProfilePage() {
                         src={
                           <Image
                             preview={false}
-                            src={
-                              avatar
-                                ? URL.createObjectURL(avatar)
-                                : userInfo.data.avatar
-                            }
+                            src={avatar ? URL.createObjectURL(avatar) : avatarUrl}
                           />
                         }
-                      ></Avatar>
+                      />
                       <span className="avatar-upload">
                         <Button
                           className="btn-upload"
@@ -205,7 +194,7 @@ function ProfilePage() {
                             setVisible(true);
                           }}
                           icon={<Icons.EditOutlined />}
-                        ></Button>
+                        />
                         <input
                           ref={inputFile}
                           type="file"
@@ -213,7 +202,7 @@ function ProfilePage() {
                           id="avatar"
                           name="avatar"
                           accept="image/*"
-                          onChange={(e) => chageAvatar(e)}
+                          onChange={chageAvatar}
                         />
                       </span>
                     </div>
@@ -222,9 +211,7 @@ function ProfilePage() {
                       className={visible ? "btn-avatar active" : "btn-avatar"}
                     >
                       <Button
-                        onClick={() => {
-                          updateAvatar();
-                        }}
+                        onClick={updateAvatar}
                         icon={<Icons.CheckOutlined />}
                       >
                         Ok
@@ -239,7 +226,7 @@ function ProfilePage() {
                         Huỷ
                       </Button>
                     </Space>
-                    <h3>{userInfo.data?.name}</h3>
+                    <h3>{userName}</h3>
                   </div>
                   <Menu
                     mode="inline"
