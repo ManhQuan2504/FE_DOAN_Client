@@ -119,10 +119,10 @@ function* getUserInfoSaga(action) {
       modelName: "orders",
       byField: JSON.stringify({ customer: id })  // Chuyển đối tượng thành chuỗi JSON
     };
-    console.log("🚀 ~ function*getUserInfoSaga ~ data:", data)
+    // console.log("🚀 ~ function*getUserInfoSaga ~ data:", data)
 
     const orderUser = yield apiGetList2(data);
-    console.log("🚀 ~ function*getUserInfoSaga ~ orderUser:", orderUser)
+    // console.log("🚀 ~ function*getUserInfoSaga ~ orderUser:", orderUser)
     result.data.dataObject.orderList = orderUser.dataObject;
 
     yield put({

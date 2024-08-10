@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Collapse, Checkbox, Slider, Rate } from "antd";
+import { Collapse, Checkbox, Slider, Rate, Radio } from "antd";
 
 import { SIZE_LIST } from "../../../../../constants/size";
 import { COLOR_MENU } from "../../../../../constants/color";
@@ -51,24 +51,25 @@ function FilterProduct({
     15000000: "15tr",
   };
 
-  function renderCategoryCheckbox() {
-    const categoryCheckbox = categoryList.data.map((categoryItem) => ({
-      label: categoryItem.name,
-      value: categoryItem.id,
+  function renderCategoryRadio() {
+    const categoryRadio = categoryList.data.map((categoryItem) => ({
+      label: categoryItem.categoryName,
+      value: categoryItem._id,
     }));
     return (
-      <Checkbox.Group
-        options={categoryCheckbox}
-        onChange={(value) => handleFilterCategory(value)}
+      <Radio.Group
+        options={categoryRadio}
+        onChange={(e) => handleFilterCategory(e.target.value)}
         value={categoriesSelected}
+        style={{ display: 'flex', flexDirection: 'column' }}
       />
     );
   }
 
   function renderTypeCheckbox() {
     const typeCheckbox = typeList.data.map((typeItem) => ({
-      label: typeItem.name,
-      value: typeItem.id,
+      label: typeItem.categoryName,
+      value: typeItem._id,
     }));
     return (
       <Checkbox.Group
@@ -170,19 +171,19 @@ function FilterProduct({
           header={
             <>
               <div class="title-collapse">
-                <span>Thương hiệu</span>
+                <span>Loại sản phẩm</span>
               </div>
             </>
           }
           key="1"
         >
-          <div>{renderCategoryCheckbox()}</div>
+          <div>{renderCategoryRadio()}</div>
         </Panel>
         <Panel
           header={
             <>
               <div class="title-collapse">
-                <span>Loại sản phẩm</span>
+                <span>Thương hiệu</span>
               </div>
             </>
           }
@@ -190,7 +191,7 @@ function FilterProduct({
         >
           <div>{renderTypeCheckbox()}</div>
         </Panel>
-        {history.location.pathname === "/product" ? (
+        {/* {history.location.pathname === "/product" ? (
           <Panel
             header={
               <>
@@ -203,7 +204,7 @@ function FilterProduct({
           >
             <div>{renderDepartmentCheckbox()}</div>
           </Panel>
-        ) : null}
+        ) : null} */}
 
         {/* <Panel
           header={
@@ -217,7 +218,7 @@ function FilterProduct({
         >
           <div className="checkbox-normal">{renderSizeCheckbox()}</div>
         </Panel> */}
-        <Panel
+        {/* <Panel
           header={
             <>
               <div class="title-collapse">
@@ -230,7 +231,7 @@ function FilterProduct({
           <div className="checkbox-normal color-list">
             {renderColorCheckbox()}
           </div>
-        </Panel>
+        </Panel> */}
         <Panel
           header={
             <>

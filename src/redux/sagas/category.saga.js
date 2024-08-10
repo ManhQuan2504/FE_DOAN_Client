@@ -8,7 +8,7 @@ function* getCategoryListSaga(action) {
     const searchKey = action.payload?.searchKey;
     const result = yield axios({
       method: "GET",
-      url:`${SERVER_API_URL}/categories`,
+      url:`${SERVER_API_URL}/v1/categories?modelName=categories`,
       params: {
         _sort: "id",
         _order: "desc",
@@ -16,12 +16,16 @@ function* getCategoryListSaga(action) {
         ...(searchKey && { q: searchKey }),
       },
     })
+    const dataResult = result?.data?.dataObject;
+    const dataCategory = dataResult.filter(c => c.isParent === true)
     yield put({
       type: SUCCESS(CATEGORY_ACTION.GET_CATEGORY_LIST),
       payload: {
-        data: result.data,
+        data: dataCategory,
       },
     });
+    console.log("🚀 ~ function*getCategoryListSaga ~ dataCategory:", dataCategory)
+
   } catch (e) {
     yield put({
       type: FAILURE(CATEGORY_ACTION.GET_CATEGORY_LIST),

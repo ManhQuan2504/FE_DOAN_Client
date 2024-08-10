@@ -26,8 +26,9 @@ function ProductPage() {
   const { productList } = useSelector((state) => state.productReducer);
   const { categoryList } = useSelector((state) => state.categoryReducer);
   const { typeList } = useSelector((state) => state.typeReducer);
+  console.log("🚀 ~ ProductPage ~ typeList:", typeList)
   const { departmentList } = useSelector((state) => state.departmentReducer);
-  const [categoriesSelected, setCategoriesSelect] = useState([]);
+  const [categoriesSelected, setCategoriesSelect] = useState('');
   const [sortValue, setSortValue] = useState("");
   const [typesSelected, setTypesSelect] = useState([]);
   const [departmentsSelected, setDepartmentsSelect] = useState([]);
@@ -53,17 +54,17 @@ function ProductPage() {
     setSearchKey("");
     setSortValue("");
     setPriceRange([0, 15000000]);
-    if (history.location.pathname === "/product/men") {
+    if (history.location.pathname === "/product/DIEU_HOA") {
       setDepartmentsSelect([1]);
-      dispatch(getProductListAction({ page: 1, departmentsSelected: [1] }));
+      dispatch(getProductListAction({ page: 1, categoriesSelected: ['668d392f6898d2df872ea7fd'] }));
     }
-    if (history.location.pathname === "/product/woman") {
+    if (history.location.pathname === "/product/TU_LANH") {
       setDepartmentsSelect([2]);
-      dispatch(getProductListAction({ page: 1, departmentsSelected: [2] }));
+      dispatch(getProductListAction({ page: 1, categoriesSelected: ['66744456a05d2d473e7b7646'] }));
     }
-    if (history.location.pathname === "/product/kids") {
+    if (history.location.pathname === "/product/MAY_GIAT") {
       setDepartmentsSelect([3]);
-      dispatch(getProductListAction({ page: 1, departmentsSelected: [3] }));
+      dispatch(getProductListAction({ page: 1, categoriesSelected: ['6697e3fc0e31e1290a69145e'] }));
     }
     if (history.location.pathname === "/product") {
       setDepartmentsSelect([]);
@@ -226,11 +227,11 @@ function ProductPage() {
             title={
               history.location.pathname === "/product"
                 ? "Tất cả sản phẩm"
-                : history.location.pathname === "/product/men"
+                : history.location.pathname === "/product/DIEU_HOA"
                 ? "Điều hoà"
-                : history.location.pathname === "/product/woman"
+                : history.location.pathname === "/product/TU_LANH"
                 ? "Tủ lạnh"
-                : history.location.pathname === "/product/kids"
+                : history.location.pathname === "/product/MAY_GIAT"
                 ? "Máy giặt"
                 : null
             }

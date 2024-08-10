@@ -5,11 +5,16 @@ import { SERVER_API_URL } from "./apiUrl";
 
 function* getTypeListSaga(action) {
   try {
-    const result = yield axios.get(`${SERVER_API_URL}/types`);
+    const result = yield axios({
+      method: "GET",
+      url:`${SERVER_API_URL}/v1/categories?modelName=categories`,
+    })
+    const dataResult = result?.data?.dataObject;
+    const dataCategory = dataResult.filter(c => c.isParent === false)
     yield put({
       type: SUCCESS(TYPE_ACTION.GET_TYPE_LIST),
       payload: {
-        data: result.data,
+        data: dataCategory,
       },
     });
   } catch (e) {

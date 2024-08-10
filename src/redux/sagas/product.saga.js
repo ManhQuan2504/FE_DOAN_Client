@@ -6,10 +6,12 @@ import { SERVER_API_URL } from "./apiUrl";
 import { PRODUCT_LIMIT } from "../../constants/product";
 
 function* getProductListSaga(action) {
+  console.log("🚀 ~ function*getProductListSaga ~ action:", action)
   try {
     const page = action.payload?.page;
     const sortValue = action.payload?.sortValue;
     const categoriesSelected = action.payload?.categoriesSelected;
+    console.log("🚀 ~ function*getProductListSaga ~ categoriesSelected:", categoriesSelected)
     const typesSelected = action.payload?.typesSelected;
     const departmentsSelected = action.payload?.departmentsSelected;
     const priceRange = action.payload?.priceRange;
@@ -21,67 +23,72 @@ function* getProductListSaga(action) {
       _sort: sortValue?.split("-")[0],
       _order: sortValue?.split("-")[1],
     };
+
     let categoryParams = "";
-    if (categoriesSelected) {
+    if (Array.isArray(categoriesSelected)) {
       categoriesSelected.forEach((categoryId, categoryIndex) => {
         const andParams = categoryIndex < categoriesSelected.length - 1 ? "&" : "";
-        categoryParams = categoryParams + `categoryId=${categoryId}${andParams}`;
+        categoryParams = categoryParams + `"category":"${categoryId}${andParams}"`;
       });
-    }
-    let departmentParams = "";
-    if (departmentsSelected) {
-      departmentsSelected.forEach((departmentId, departmentIndex) => {
-        const andParams =
-          departmentIndex < departmentsSelected.length - 1 ? "&" : "";
-        departmentParams =
-          departmentParams + `departmentId=${departmentId}${andParams}`;
-      });
+    } else if (categoriesSelected) {
+      categoryParams = `"category":"${categoriesSelected}"`;
     }
 
-    let typeParams = "";
-    if (typesSelected) {
-      typesSelected.forEach((typeId, typeIndex) => {
-        const andParams = typeIndex < typesSelected.length - 1 ? "&" : "";
-        typeParams = typeParams + `typeId=${typeId}${andParams}`;
-      });
-    }
+    // let departmentParams = "";
+    // if (departmentsSelected) {
+    //   departmentsSelected.forEach((departmentId, departmentIndex) => {
+    //     const andParams =
+    //       departmentIndex < departmentsSelected.length - 1 ? "&" : "";
+    //     departmentParams =
+    //       departmentParams + `departmentId=${departmentId}${andParams}`;
+    //   });
+    // }
 
-    let colorParams = "";
-    if (colorSelected) {
-      colorSelected.forEach((colorCode, colorIndex) => {
-        const andParams = colorIndex < colorSelected.length - 1 ? "&" : "";
-        colorParams = colorParams + `color=${colorCode}${andParams}`;
-      });
-    }
+    // let typeParams = "";
+    // if (typesSelected) {
+    //   typesSelected.forEach((typeId, typeIndex) => {
+    //     const andParams = typeIndex < typesSelected.length - 1 ? "&" : "";
+    //     typeParams = typeParams + `typeId=${typeId}${andParams}`;
+    //   });
+    // }
+
+    // let colorParams = "";
+    // if (colorSelected) {
+    //   colorSelected.forEach((colorCode, colorIndex) => {
+    //     const andParams = colorIndex < colorSelected.length - 1 ? "&" : "";
+    //     colorParams = colorParams + `color=${colorCode}${andParams}`;
+    //   });
+    // }
 
     let url = `${SERVER_API_URL}/v1/products?modelName=products`;
-    url = categoriesSelected?.length > 0 ? url + `?${categoryParams}` : url;
-    if (typesSelected?.length > 0) {
-      if (categoriesSelected?.length > 0) {
-        url = url + `&${typeParams}`;
-      } else {
-        url = url + `?${typeParams}`;
-      }
-    }
-    if (departmentsSelected?.length > 0) {
-      if (categoriesSelected?.length > 0 || typesSelected?.length > 0) {
-        url = url + `&${departmentParams}`;
-      } else {
-        url = url + `?${departmentParams}`;
-      }
-    }
+    url = categoriesSelected?.length > 0 ? url + `&byField={${categoryParams}}` : url;
+    // if (typesSelected?.length > 0) {
+    //   if (categoriesSelected?.length > 0) {
+    //     url = url + `&${typeParams}`;
+    //   } else {
+    //     url = url + `?${typeParams}`;
+    //   }
+    // }
+    // if (departmentsSelected?.length > 0) {
+    //   if (categoriesSelected?.length > 0 || typesSelected?.length > 0) {
+    //     url = url + `&${departmentParams}`;
+    //   } else {
+    //     url = url + `?${departmentParams}`;
+    //   }
+    // }
 
-    if (colorSelected?.length > 0) {
-      if (
-        categoriesSelected?.length > 0 ||
-        typesSelected?.length > 0 ||
-        departmentsSelected?.length > 0
-      ) {
-        url = url + `&${colorParams}`;
-      } else {
-        url = url + `?${colorParams}`;
-      }
-    }
+    // if (colorSelected?.length > 0) {
+    //   if (
+    //     categoriesSelected?.length > 0 ||
+    //     typesSelected?.length > 0 ||
+    //     departmentsSelected?.length > 0
+    //   ) {
+    //     url = url + `&${colorParams}`;
+    //   } else {
+    //     url = url + `?${colorParams}`;
+    //   }
+    // }
+    console.log("🚀 ~ f@@@@@@@@@@unction*getProductListSaga ~ url:", url)
 
     const result = yield axios({
       method: "GET",
@@ -103,22 +110,6 @@ function* getProductListSaga(action) {
       },
     });
 
-    // const productData = result?.data?.dataObject.map((productItem) => {
-    //   return {
-    //     ...productItem,
-    //     rate:
-    //       productItem.comments.length === 0
-    //         ? 0
-    //         : Math.round(
-    //             (productItem.comments.reduce(
-    //               (result, comment) => (result += comment.rating),
-    //               0
-    //             ) /
-    //               productItem.comments.length) *
-    //               2
-    //           ) / 2,
-    //   };
-    // });
     yield put({
       type: SUCCESS(PRODUCT_ACTION.GET_PRODUCT_LIST),
       payload: {

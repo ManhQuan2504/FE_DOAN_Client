@@ -26,7 +26,7 @@ function TagList({
 
   function renderTagFilter() {
     if (
-      categoriesSelected.length === 0 &&
+      categoriesSelected === "" &&
       colorSelected.length === 0 &&
       typesSelected.length === 0 &&
       (departmentsSelected.length === 0 ||
@@ -39,39 +39,29 @@ function TagList({
     return (
       <Space wrap style={{ padding: "5px 0 15px" }} size={[0, 8]}>
         {/* Đang filter theo: */}
-        {categoriesSelected.length > 0 &&
-          categoriesSelected.map((selectedItem, selectedIndex) => {
-            const categorySelectedData = categoryList.data.find(
-              (categoryItem) => categoryItem.id === selectedItem
-            );
-            if (!categorySelectedData) return null; // Kiểm tra nếu categorySelectedData tồn tại
-            return (
-              <Tag
-                color="#1790c8"
-                key={`category-${selectedIndex}`}
-                closable
-                onClose={(e) => {
-                  e.preventDefault();
-                  const newCategoriesSelect = [...categoriesSelected];
-                  newCategoriesSelect.splice(selectedIndex, 1);
-                  setCategoriesSelect(newCategoriesSelect);
-                  dispatch(
-                    getProductListAction({
-                      page: 1,
-                      categoriesSelected: newCategoriesSelect,
-                      priceRange,
-                      departmentsSelected: departmentsSelected,
-                      typesSelected: typesSelected,
-                      searchKey: searchKey,
-                      colorSelected,
-                    })
-                  );
-                }}
-              >
-                {categorySelectedData.name}
-              </Tag>
-            );
-          })}
+        {categoriesSelected && categoryList.data.find(categoryItem => categoryItem.id === categoriesSelected) && (
+          <Tag
+            color="#1790c8"
+            closable
+            onClose={(e) => {
+              e.preventDefault();
+              setCategoriesSelect('');
+              dispatch(
+                getProductListAction({
+                  page: 1,
+                  categoriesSelected: '',
+                  priceRange,
+                  departmentsSelected,
+                  typesSelected,
+                  searchKey,
+                  colorSelected,
+                })
+              );
+            }}
+          >
+            {categoryList.data.find(categoryItem => categoryItem.id === categoriesSelected).name}
+          </Tag>
+        )}
         {typesSelected.length > 0 &&
           typesSelected.map((typeSelectedItem, typeSelectedIndex) => {
             const typeSelectedData = typeList.data.find(
@@ -91,10 +81,10 @@ function TagList({
                   dispatch(
                     getProductListAction({
                       page: 1,
-                      categoriesSelected: categoriesSelected,
+                      categoriesSelected,
                       typesSelected: newTypesSelect,
                       priceRange,
-                      departmentsSelected: departmentsSelected,
+                      departmentsSelected,
                       searchKey: searchKey,
                       colorSelected,
                     })
@@ -116,7 +106,7 @@ function TagList({
               return (
                 <Tag
                   color="#1790c8"
-                  key={`type-${departmentSelectedIndex}`}
+                  key={`department-${departmentSelectedIndex}`}
                   closable
                   onClose={(e) => {
                     e.preventDefault();
@@ -126,8 +116,8 @@ function TagList({
                     dispatch(
                       getProductListAction({
                         page: 1,
-                        categoriesSelected: categoriesSelected,
-                        typesSelected: typesSelected,
+                        categoriesSelected,
+                        typesSelected,
                         departmentsSelected: newDepartmentSelect,
                         priceRange,
                         searchKey: searchKey,
@@ -150,7 +140,7 @@ function TagList({
             return (
               <Tag
                 color="#1790c8"
-                key={`type-${colorSelectedIndex}`}
+                key={`color-${colorSelectedIndex}`}
                 closable
                 onClose={(e) => {
                   e.preventDefault();
@@ -160,11 +150,11 @@ function TagList({
                   dispatch(
                     getProductListAction({
                       page: 1,
-                      categoriesSelected: categoriesSelected,
-                      typesSelected: typesSelected,
+                      categoriesSelected,
+                      typesSelected,
                       colorSelected: newColorSelect,
                       priceRange,
-                      departmentsSelected: departmentsSelected,
+                      departmentsSelected,
                       searchKey: searchKey,
                     })
                   );
@@ -202,13 +192,13 @@ function TagList({
             history.location.pathname === "/product") ||
           typesSelected.length > 0 ||
           colorSelected.length > 0 ||
-          categoriesSelected.length > 0) && (
+          categoriesSelected) && (
           <Tag
             closable
             color="#ff324d"
             onClose={() => {
               setPriceRange([0, 15000000]);
-              setCategoriesSelect([]);
+              setCategoriesSelect('');
               setTypesSelect([]);
               setColorSelect([]);
               if (history.location.pathname === "/product") {
@@ -217,7 +207,7 @@ function TagList({
               dispatch(
                 getProductListAction({
                   page: 1,
-                  categoriesSelected: [],
+                  categoriesSelected: '',
                   typesSelected: [],
                   departmentsSelected:
                     history.location.pathname === "/product"
@@ -236,6 +226,7 @@ function TagList({
       </Space>
     );
   }
+
   return <>{renderTagFilter()}</>;
 }
 

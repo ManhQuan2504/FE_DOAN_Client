@@ -82,9 +82,9 @@ function App() {
         <Switch>
           <DefaultLayout exact path="/" component={HomePage} />
           <DefaultLayout exact path="/product" component={ProductPage} />
-          <DefaultLayout exact path="/product/men" component={ProductPage} />
-          <DefaultLayout exact path="/product/woman" component={ProductPage} />
-          <DefaultLayout exact path="/product/kids" component={ProductPage} />
+          <DefaultLayout exact path="/product/DIEU_HOA" component={ProductPage} />
+          <DefaultLayout exact path="/product/TU_LANH" component={ProductPage} />
+          <DefaultLayout exact path="/product/MAY_GIAT" component={ProductPage} />
           <DefaultLayout exact path="/blog" component={BlogPage} />
           <DefaultLayout exact path="/contact" component={ContactPage} />
           <DefaultLayout exact path="/profile" component={ProfilePage} />

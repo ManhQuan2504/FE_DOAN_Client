@@ -98,15 +98,15 @@ function Header({ type }) {
     },
     {
       title: "Điều hoà",
-      path: "/product/men",
+      path: "/product/DIEU_HOA",
     },
     {
       title: "Tủ lạnh",
-      path: "/product/woman",
+      path: "/product/TU_LANH",
     },
     {
       title: "Máy giặt",
-      path: "/product/kids",
+      path: "/product/MAY_GIAT",
     },
     {
       title: "Bài viết",

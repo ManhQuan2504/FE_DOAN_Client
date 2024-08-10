@@ -181,61 +181,62 @@ function CheckoutPage() {
     setLocationSelect((prev) => ({ ...prev, ward: value }));
   }, []);
 
-  const handleOrder = useCallback((values, checkoutInfo, paymentID = "") => {
-    console.log("🚀 ~ handleOrder ~ cartList:", cartList)
+  const handleOrder = useCallback(async (values, paymentID = "") => {
     if (!cartList?.data) return;
 
-    cartList.data.forEach((cartItem) => {
-      const indexProductNew = productList?.data?.findIndex(
-        (productnew) => productnew.id === cartItem.productId
-      );
-      if (indexProductNew !== -1) {
-        const productItemNew = productList?.data[indexProductNew];
-        dispatch(
-          editProductAction({
-            id: productItemNew.id,
-            data: {
-              quantity: cartItem.quantity - cartItem.count,
-              sold: productItemNew.sold + cartItem.count,
-            },
-          })
-        );
+    const autoCode = generateAutoCode("DH");
+    const { carts, ...infUser } = userInfo?.data?.data || {};
+    const productList = cartList?.data?.map((productItem) => {
+      const { quantity, ...rest } = productItem;
+      return rest;
+    }) || [];
+
+    const shipTo = `${values.address} - ${location.wards.find(ward => ward.code === values.ward)?.name} - ${location.districts.find(district => district.code === values.district)?.name} - ${location.cities.find(city => city.code === values.city)?.name}`;
+    console.log("🚀 ~ handleOrder ~ shipTo:", shipTo)
+
+    const data = {
+      orderNumber: autoCode,
+      customer: infUser,
+      productList,
+      orderDate: new Date(),
+      orderState: "Chờ phê duyệt",
+      paymentMethod: "cod",
+      shipTo,
+      paided: 0,
+      totalAmount: totalPrice,
+      dataPayment: paymentID ? { paymentID } : {},
+    };
+
+    try {
+      const formData = {
+        modelName: "orders",
+        data
+      };
+
+      const { dataObject } = await apiCreate(formData);
+
+      const userData = {
+        modelName: "customers",
+        id: userInfo?.data?.data?._id,
+        data: { carts: [] },
       }
-    });
+      await apiUpdate(userData);
 
-    dispatch(
-      orderProductAction({
-        id: userInfo?.data?.id,
-        data: {
-          userId: userInfo?.data?.id,
-          name: values.name,
-          email: values.email,
-          phoneNumber: values.phoneNumber,
-          address:
-            values.address +
-            " - " +
-            location?.wards.find((ward) => ward.code === values.ward)?.name +
-            " - " +
-            location?.districts.find((district) => district.code === values.district)?.name +
-            " - " +
-            location?.cities.find((city) => city.code === values.city)?.name,
-          products: cartList.data,
-          totalPrice:
-            cartList.orderInfo.total !== 0
-              ? cartList.orderInfo.total
-              : totalPrice,
-          paymentID: paymentID,
-          checkoutInfo: checkoutInfo,
-          status: "waiting",
-        },
-      })
-    );
+      console.log("🚀 ~ handleOrder ~ dataObject:", dataObject);
 
-    notification.success({
-      message: "Đặt hàng thành công",
-      description: "Cảm ơn quý khách đã mua hàng.",
-    });
-  }, [cartList, productList, userInfo, location, totalPrice, dispatch]);
+      window.location.href = "/";
+      localStorage.setItem('paymentSuccess', JSON.stringify({
+        message: "Đặt hàng thành công",
+        description: "Cảm ơn quý khách đã mua hàng.",
+      }));
+    } catch (error) {
+      notification.error({
+        message: "Đặt hàng thất bại",
+        description: error.message,
+      });
+    }
+  }, [cartList, userInfo, location, totalPrice, dispatch]);
+
 
   const paypalCreatOrder = async (dataPayment) => {
     try {
