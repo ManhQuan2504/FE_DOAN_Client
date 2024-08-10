@@ -18,6 +18,8 @@ import {
   notification,
   Form,
   Input,
+  Modal,
+  Table,
 } from "antd";
 
 import moment from "moment";
@@ -55,12 +57,12 @@ function ProductInfo({
 }) {
   const { wishList } = useSelector((state) => state.wishlistReducer);
   const { cartList } = useSelector((state) => state.cartReducer);
-  console.log("🚀 ~ cartList:", cartList)
 
   const [swiper, setSwiper] = useState(null);
   const [productCount, setProductCount] = useState(1);
   const [viewMore, setViewMore] = useState(false);
   const [showEditComment, setShowEditComment] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false); // State for Modal
 
   const [formComment] = Form.useForm();
 
@@ -132,7 +134,7 @@ function ProductInfo({
 
   /// Dùng với kiểu cần đăng nhập để bỏ vào giỏ hàng
   function handleAddToCart() {
-    if (!userInfo.data.data.customerName) {
+    if (!userInfo?.data?.data?.customerName) {
       const key = `open${Date.now()}`;
       return notification.warning({
         message: "Chưa đăng nhập",
@@ -151,123 +153,44 @@ function ProductInfo({
         ),
       });
     }
-    if (optionSelected.id) {
-      const existOptionIndex = cartList.data?.findIndex(
-        (item) => item.option.id === optionSelected.id
-      );
-      if (existOptionIndex !== -1) {
-        const newCartList = Array.isArray(cartList.data) ? [...cartList.data] : [];
-        newCartList.splice(existOptionIndex, 1, {
-          productId: parseInt(productID),
-          count:
-            cartList.data[existOptionIndex].count + productCount >=
-              productDetail.data.quantity
-              ? productDetail.data.quantity
-              : cartList.data[existOptionIndex].count + productCount,
-          name: productDetail.data.name,
-          price: productDetail.data.price,
-          color: productDetail.data.color,
-          image: productDetail.data.images[0],
-          quantity: productDetail.data.quantity,
-          category: productDetail.data.category.name,
-          type: productDetail.data.type.name,
-          department: productDetail.data.department.description,
-          option: {
-            id: optionSelected.id,
-            size: optionSelected.size,
-            price: optionSelected.price,
-          },
-        });
-        dispatch(
-          addToCartAction({
-            userId: userInfo.data.id,
-            carts: newCartList,
-          })
-        );
-      } else {
-        dispatch(
-          addToCartAction({
-            userId: userInfo.data.id,
-            carts: [
-              ...cartList.data,
-              {
-                productId: parseInt(productID),
-                count: productCount,
-                name: productDetail.data.name,
-                price: productDetail.data.price,
-                color: productDetail.data.color,
-                image: productDetail.data.images[0],
-                quantity: productDetail.data.quantity,
-                type: productDetail.data.type.name,
-                department: productDetail.data.department.description,
-                option: {
-                  id: optionSelected.id,
-                  size: optionSelected.size,
-                  price: optionSelected.price,
-                },
-              },
-            ],
-          })
-        );
-      }
-    } else {
-      const existProductIndex = cartList.data?.findIndex(
-        (item) => item.productId === parseInt(productID)
-      );
-  
-      if (existProductIndex !== -1) {
-        const newCart = Array.isArray(cartList?.data) ? [...cartList?.data] : [];
-        newCart.splice(existProductIndex, 1, {
-          productId: parseInt(productID),
-          count:
-            cartList.data[existProductIndex].count + productCount >=
-              productDetail.data.quantity
-              ? productDetail.data.quantity
-              : cartList.data[existProductIndex].count + productCount,
-          name: productDetail.data.name,
-          price: productDetail.data.price,
-          color: productDetail.data.color,
-          image: productDetail.data.images[0],
-          quantity: productDetail.data.quantity,
-          category: productDetail.data.category.name,
-          type: productDetail.data.type.name,
-          department: productDetail.data.department.description,
-          option: {},
-        });
-        dispatch(
-          addToCartAction({
-            userId: userInfo.data.id,
-            carts: newCart,
-          })
-        );
-      } else {
-        dispatch(
-          addToCartAction({
-            userId: userInfo?.data?.data?._id,
-            carts: [
-              ...cartList.data,
-              {
-                productId: productDetail?.data?._id,
-                productCode: productDetail?.data?.productCode,
-                productName: productDetail?.data?.productName,
-                count: productCount,
-                price: productDetail?.data?.price,
-                color: productDetail?.data?.color,
-                image: productDetail?.data?.images[0],
-                quantity: productDetail?.data?.qty,
-                category: productDetail?.data?.category,
-                brand: productDetail?.data?.brand,
-                type: productDetail?.data?.type?.name,
-                description: productDetail?.data?.description,
-                specifications: productDetail?.data?.specifications,
-                tax: productDetail?.data?.tax,
-                option: {},
-              },
-            ],
-          })
-        );
-      }
+    const existProductIndex = cartList.data?.filter(i => {
+      return i.productId === productID
+    });
+
+    if (existProductIndex && existProductIndex.length > 0) {
+      return notification.info({
+        message: "Sản phẩm đã có trong giỏ hàng",
+        description: "Sản phẩm này đã có trong giỏ hàng của bạn.",
+      });
     }
+
+    dispatch(
+      addToCartAction({
+        userId: userInfo?.data?.data?._id,
+        carts: [
+          ...cartList.data,
+          {
+            productId: productDetail?.data?._id,
+            productCode: productDetail?.data?.productCode,
+            productName: productDetail?.data?.productName,
+            count: productCount,
+            price: productDetail?.data?.price,
+            color: productDetail?.data?.color,
+            image: productDetail?.data?.images[0],
+            quantity: productDetail?.data?.qty,
+            category: productDetail?.data?.category,
+            brand: productDetail?.data?.brand,
+            type: productDetail?.data?.type?.name,
+            description: productDetail?.data?.description,
+            specifications: productDetail?.data?.specifications,
+            tax: productDetail?.data?.tax,
+            warranty: productDetail?.data?.warranty,
+            option: {},
+          },
+        ],
+      })
+    );
+
     setProductCount(1);
   }
 
@@ -286,6 +209,106 @@ function ProductInfo({
     },
   ];
 
+  function handleModalOk() {
+    setIsModalVisible(false);
+  }
+
+  function handleModalCancel() {
+    setIsModalVisible(false);
+  }
+
+  function showWarrantyDetails() {
+    setIsModalVisible(true);
+  }
+
+  const columns = [
+    {
+      title: 'NỘI DUNG CHÍNH SÁCH',
+      dataIndex: 'title',
+      key: 'title',
+      render: (text) => <div style={{ whiteSpace: 'pre-wrap' }}>{text}</div>,
+    },
+    {
+      title: 'ĐIỀU KIỆN ÁP DỤNG',
+      dataIndex: 'content',
+      key: 'content',
+      render: (text) => <div style={{ whiteSpace: 'pre-wrap' }}>{text}</div>,
+    },
+  ];
+
+  const data = [
+    {
+      key: '1',
+      title: `1) BẢO HÀNH CÓ CAM KẾT TRONG 12 THÁNG
+
+- RIÊNG Phụ kiện có điện AVA bảo hành 3 tháng. Đồng hồ thời trang chỉ bảo hành bộ máy, không bảo hành dây, vỏ, mặt kính.
+
+- Chỉ áp dụng cho sản phẩm chính, KHÔNG áp dụng cho phụ kiện đi kèm sản phẩm chính.
+
++ Bảo hành trong vòng 15 ngày (tính từ ngày LanChiShop nhận máy ở trạng thái lỗi và đến ngày gọi khách hàng ra lấy lại máy đã bảo hành).
+
++ Sản phẩm không bảo hành lại lần 2 trong 30 ngày kể từ ngày máy được bảo hành xong.
+
++ Nếu LanChiShop vi phạm cam kết (bảo hành quá 15 ngày hoặc phải bảo hành lại sản phẩm lần nữa trong 30 ngày kể từ lần bảo hành trước), Khách hàng được áp dụng phương thức Hư gì đổi nấy ngay và luôn hoặc Hoàn tiền với mức phí giảm 50%.
+
+*Từ tháng thứ 13 trở đi không áp dụng bảo hành cam kết, chỉ áp dụng bảo hành hãng (nếu có).`,
+      content: `- Sản phẩm đủ điều kiện bảo hành của hãng.`,
+    },
+    {
+      key: '2',
+      title: `2) HƯ GÌ ĐỔI NẤY NGAY VÀ LUÔN (KHÔNG áp dụng cho Đồng hồ (ngoại trừ 3 hãng ELIO, SKMEI, SMILE KID), phụ kiện có điện)
+
+Sản phẩm hư gì thì đổi đó (cùng model, cùng dung lượng, cùng màu sắc...) đối với sản phẩm chính và đổi tương đương đối với phụ kiện đi kèm, cụ thể:
+
+2.1) Hư sản phẩm chính thì đổi sản phẩm chính mới
+
+- Tháng đầu tiên kể từ ngày mua: miễn phí.
+
+- Tháng thứ 2 đến tháng thứ 12: phí 10% giá trị hóa đơn/tháng.
+
+(VD: tháng thứ 2 phí 10%, tháng thứ 3 phí 20%...).
+
+
+Lưu ý: Nếu không có sản phẩm chính đổi cho Khách hàng thì áp dụng chính sách Bảo hành có cam kết hoặc Hoàn tiền với mức phí giảm 50%.
+
+2.2) Hư phụ kiện đi kèm thì đổi phụ kiện có cùng công năng mà LanChiShop đang kinh doanh:
+
+Phụ kiện đi kèm được đổi miễn phí trong vòng 12 tháng kể từ ngày mua sản phẩm chính bằng hàng phụ kiện LanChiShop đang kinh doanh mới với chất lượng tương đương.
+
+Lưu ý: Nếu không có phụ kiện tương đương hoặc Khách hàng không thích thì áp dụng bảo hành hãng.
+
+2.3) Lỗi phần mềm không áp dụng, mà chỉ khắc phục lỗi phần mềm.
+
+2.4) Trường hợp Khách hàng muốn đổi full box (nguyên thùng, nguyên hộp): ngoài việc áp dụng mức phí đổi trả tại Mục 2.1 thì Khách hàng sẽ trả thêm phí lấy full box tương đương 20% giá trị hóa đơn.`,
+      content: `- Sản phẩm đổi trả phải giữ nguyên 100% hình dạng ban đầu và đủ điều kiện bảo hành của hãng.
+
+- Sản phẩm chỉ dùng cho mục đích sử dụng cá nhân, không áp dụng việc sử dụng sản phẩm cho mục đích thương mại.`,
+    },
+    {
+      key: '3',
+      title: `3) HOÀN TIỀN: Áp dụng cho sản phẩm lỗi và không lỗi.
+
+- Tháng đầu tiên kể từ ngày mua: phí 20% giá trị hóa đơn.
+
+- Tháng thứ 2 đến tháng thứ 12: phí 10% giá trị hóa đơn/tháng.
+
+- Riêng phụ kiện có điện AVA: áp dụng hoàn tiền trong 3 tháng với mức phí như trên. Từ tháng thứ 4 trở đi không áp dụng hoàn tiền.`,
+      content: `- Sản phẩm đổi trả phải giữ nguyên 100% hình dạng ban đầu và đủ điều kiện bảo hành của hãng.
+
+- Thân máy, màn hình không trầy xước (áp dụng cho Điện thoại, Tablet, Laptop, Màn hình máy tính, Máy tính để bàn, Đồng hồ).
+
+- Sản phẩm chỉ dùng cho mục đích sử dụng cá nhân, không áp dụng việc sử dụng sản phẩm cho mục đích thương mại.
+
+- Hoàn trả lại đầy đủ hộp, sạc, phụ kiện đi kèm:
+
++ Mất hộp thu phí 2% giá trị hóa đơn đối với nhóm Điện thoại, Tablet, Laptop, Màn hình máy tính, Máy tính để bàn, Đồng hồ, Máy in.
+
++ Mất phụ kiện thu phí theo giá bán tối thiểu trên website LanChiShop và chính hãng (tối đa 5% giá trị hóa đơn) cho tất cả nhóm sản phẩm.
+
+- Hoàn trả toàn bộ hàng khuyến mãi. Nếu mất hàng khuyến mãi sẽ thu phí theo mức giá đã được công bố.`,
+    },
+    // Thêm các dòng khác nếu cần
+  ];
   function renderCommentList() {
     return commentList.data?.map((commentItem, commentIndex) => {
       const comment = {
@@ -496,10 +519,10 @@ function ProductInfo({
                       : ` ${productDetail?.data?.qty}`}
                   </span>
                 </div>
-                {/* <div className="product-type-item">
-                  <span className="product-info-tag">Số lượng sản phẩm:</span>
-                  <span className="product-info-text">{` ${productDetail?.data?.department?.name}`}</span>
-                </div> */}
+                <div className="product-type-item">
+                  <span className="product-info-tag">Thời gian bảo hành:</span>
+                  <span className="product-info-text">{` ${productDetail?.data?.warranty}`} Tháng </span><Button onClick={showWarrantyDetails}>Xem chi tiết bảo hành</Button>
+                </div>
               </div>
               <div className="product-color">
                 <span className="product-info-tag">Màu sắc:</span>
@@ -675,6 +698,22 @@ function ProductInfo({
           </Style.DescriptionsCard>
         </Col>
       </Row>
+      <Modal
+        title="Chi tiết bảo hành"
+        visible={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        footer={null} // Loại bỏ nút OK và Cancel nếu bạn không cần chúng
+        width={700}
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={false}
+          bordered
+          size="small"
+        />
+      </Modal>
     </Style.ProductInfo>
   );
 }

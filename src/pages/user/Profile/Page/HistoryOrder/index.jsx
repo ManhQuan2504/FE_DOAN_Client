@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 
 import * as Style from "./style";
 import { TITLE } from "../../../../../constants/title";
+import moment from "moment";
 
 const { Title } = Typography;
 
@@ -34,6 +35,12 @@ function HistoryOrder() {
         const formattedValue = typeof value === 'number' ? value.toLocaleString() : 'N/A';
         return `${formattedValue}đ`;
       },
+    },
+    {
+      title: "Ngày đặt hàng",
+      dataIndex: 'orderDate',
+      key: 'orderDate',
+      render: (text) => moment(text).format('DD-MM-YYYY HH:mm'),
     },
     {
       title: "Thanh toán",

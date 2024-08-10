@@ -44,6 +44,7 @@ function TagList({
             const categorySelectedData = categoryList.data.find(
               (categoryItem) => categoryItem.id === selectedItem
             );
+            if (!categorySelectedData) return null; // Kiểm tra nếu categorySelectedData tồn tại
             return (
               <Tag
                 color="#1790c8"
@@ -76,6 +77,7 @@ function TagList({
             const typeSelectedData = typeList.data.find(
               (typeItem) => typeItem.id === typeSelectedItem
             );
+            if (!typeSelectedData) return null; // Kiểm tra nếu typeSelectedData tồn tại
             return (
               <Tag
                 color="#1790c8"
@@ -110,6 +112,7 @@ function TagList({
               const departmentSelectedData = departmentList.data.find(
                 (departmentItem) => departmentItem.id === departmentSelectedItem
               );
+              if (!departmentSelectedData) return null; // Kiểm tra nếu departmentSelectedData tồn tại
               return (
                 <Tag
                   color="#1790c8"
@@ -143,6 +146,7 @@ function TagList({
             const colorSelectedData = COLOR_MENU.find(
               (colorItem) => colorItem.code === colorSelectedItem
             );
+            if (!colorSelectedData) return null; // Kiểm tra nếu colorSelectedData tồn tại
             return (
               <Tag
                 color="#1790c8"
@@ -208,7 +212,7 @@ function TagList({
               setTypesSelect([]);
               setColorSelect([]);
               if (history.location.pathname === "/product") {
-                setDepartmentsSelect([]);
+                // setDepartmentsSelect([]);
               }
               dispatch(
                 getProductListAction({

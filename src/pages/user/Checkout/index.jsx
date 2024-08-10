@@ -247,7 +247,8 @@ function CheckoutPage() {
       }) || [];
   
       const shipTo = `${confirmValues.address} - ${location.wards.find(ward => ward.code === confirmValues.ward)?.name} - ${location.districts.find(district => district.code === confirmValues.district)?.name} - ${location.cities.find(city => city.code === confirmValues.city)?.name}`;
-      
+      const paided = dataPayment ? dataPayment?.purchase_units[0]?.amount.value : 0;
+
       const data = {
         orderNumber: autoCode,
         customer: infUser,
@@ -256,6 +257,7 @@ function CheckoutPage() {
         orderState: "Chờ phê duyệt",
         paymentMethod: "paypal",
         shipTo,
+        paided,
         totalAmount: totalPrice,
         dataPayment,
       };
@@ -272,7 +274,7 @@ function CheckoutPage() {
         id: userInfo?.data?.data?._id,
         data: {carts: []},
       }
-      const { dataClearCart } = await apiUpdate(userData);
+      await apiUpdate(userData);
       console.log("🚀 ~ paypalCreatOrder ~ dataObject:", dataObject)
     } catch (error) {
       notification.error({
@@ -281,7 +283,6 @@ function CheckoutPage() {
       });
     }
   };
-  
 
   const tranSuccess = async (payment) => {
     const { paymentID } = payment;

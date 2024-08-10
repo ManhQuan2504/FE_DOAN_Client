@@ -20,20 +20,19 @@ class PaypalButton extends React.Component {
     });
   };
 
-  onApprove = (data, actions) => {
+  onApprove = async (data, actions) => {
     const { paypalCreatOrder } = this.props; // Destructure from props
-    return actions.order.capture().then((details) => {
-      // notification.success({
-      //   message: "Thanh toán thành công",
-      //   description: "Transaction completed by " + details.payer.name.given_name,
-      // });
-      paypalCreatOrder(details);
-      // window.location.href = "/";
+    try {
+      const details = await actions.order.capture();
+      await paypalCreatOrder(details);
+      window.location.href = "/";
       localStorage.setItem('paymentSuccess', JSON.stringify({
         message: "Thanh toán thành công",
         description: "Transaction completed by " + details.payer.name.given_name,
       }));
-    });
+    } catch (error) {
+      console.error("Error during payment approval:", error);
+    }
   };
 
   onCancel = (data) => {

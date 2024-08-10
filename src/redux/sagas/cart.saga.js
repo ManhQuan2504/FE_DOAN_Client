@@ -19,11 +19,12 @@ function* addToCartSaga(action) {
       modelName: "customers",
       data: {carts: carts},
     };
-    const result = yield axios.put(`${SERVER_API_URL}/v1/customers/${userId}`, data);
+    yield axios.put(`${SERVER_API_URL}/v1/customers/${userId}`, data);
+    const result = yield axios.get(`${SERVER_API_URL}/v1/customers/${userId}?modelName=customers`);
     yield put({
       type: SUCCESS(CART_ACTION.ADD_TO_CART),
       payload: {
-        data: result.data.carts,
+        data: result.data.dataObject.carts,
       },
     });
     yield notification.success({

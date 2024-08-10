@@ -20,11 +20,6 @@ function Header({ type }) {
 
   const [sticky, setSticky] = useState(true);
   const [visible, setVisible] = useState(false);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    setUser(userInfo);
-  }, [userInfo]);
 
   const showDrawer = () => {
     setVisible(true);
@@ -52,18 +47,18 @@ function Header({ type }) {
 
   const menu = (
     <Menu>
-      <Menu.Item>
+      {/* <Menu.Item>
         <Space size={5} align="center" onClick={() => history.push("/admin")}>
           <Icons.ThunderboltOutlined /> <span>Trang Admin</span>
         </Space>
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Item>
         <Space
           size={5}
           align="center"
           onClick={() => history.push("/profile/user-info")}
         >
-          <Icons.FireOutlined /> <span>Xem thông tin</span>
+          <Icons.FireOutlined /> <span>Thông tin cá nhân</span>
         </Space>
       </Menu.Item>
       <Menu.Item>
@@ -153,7 +148,7 @@ function Header({ type }) {
             visible={visible}
           >
             <div className="user-mobile">
-              {user?.data?.data?.customerName ? (
+              {userInfo?.data?.data?.customerName ? (
                 <>
                   <Dropdown
                     overlay={menu}
@@ -162,8 +157,8 @@ function Header({ type }) {
                     trigger={["click"]}
                   >
                     <Space align="center" className="avatar-mobile">
-                      <Avatar src={user?.data?.data?.avatar} />
-                      <strong>{user?.data?.data?.customerName}</strong>
+                      <Avatar src={userInfo?.data?.data?.avatar} />
+                      <strong>{userInfo?.data?.data?.customerName}</strong>
                     </Space>
                   </Dropdown>
                 </>
@@ -226,7 +221,7 @@ function Header({ type }) {
                 </Badge>
               )}
               <div className="user-action">
-                {user?.data?.data?.customerName ? (
+                {userInfo?.data?.data?.customerName ? (
                   <>
                     <Dropdown
                       overlay={menu}
@@ -235,7 +230,7 @@ function Header({ type }) {
                       trigger={["click"]}
                     >
                       <Space align="center" style={{ cursor: "pointer" }}>
-                        <Avatar size="large" src={user?.data?.data?.avatar} />
+                        <Avatar size="large" src={userInfo?.data?.data?.avatar} />
                       </Space>
                     </Dropdown>
                   </>
