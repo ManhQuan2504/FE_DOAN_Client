@@ -184,6 +184,15 @@ function CheckoutPage() {
   const handleOrder = useCallback(async (values, paymentID = "") => {
     if (!cartList?.data) return;
 
+    // Kiểm tra nếu tổng tiền lớn hơn 3,000,000
+    if (totalPrice > 300000000) {
+      notification.info({
+        message: "Yêu cầu thanh toán trực tiếp",
+        description: "Số tiền lớn hơn 3,000,000₫. Vui lòng sử dụng phương thức thanh toán trực tuyến khác.",
+      });
+      return; // Kết thúc và không xử lý gì nữa
+    }
+
     const autoCode = generateAutoCode("DH");
     const { carts, ...infUser } = userInfo?.data?.data || {};
     const productList = cartList?.data?.map((productItem) => {
@@ -192,7 +201,6 @@ function CheckoutPage() {
     }) || [];
 
     const shipTo = `${values.address} - ${location.wards.find(ward => ward.code === values.ward)?.name} - ${location.districts.find(district => district.code === values.district)?.name} - ${location.cities.find(city => city.code === values.city)?.name}`;
-    console.log("🚀 ~ handleOrder ~ shipTo:", shipTo)
 
     const data = {
       orderNumber: autoCode,
@@ -222,8 +230,6 @@ function CheckoutPage() {
       }
       await apiUpdate(userData);
 
-      console.log("🚀 ~ handleOrder ~ dataObject:", dataObject);
-
       window.location.href = "/";
       localStorage.setItem('paymentSuccess', JSON.stringify({
         message: "Đặt hàng thành công",
@@ -237,7 +243,6 @@ function CheckoutPage() {
     }
   }, [cartList, userInfo, location, totalPrice, dispatch]);
 
-
   const paypalCreatOrder = async (dataPayment) => {
     try {
       const autoCode = generateAutoCode("DH");
@@ -246,7 +251,7 @@ function CheckoutPage() {
         const { quantity, ...rest } = productItem;
         return rest;
       }) || [];
-  
+
       const shipTo = `${confirmValues.address} - ${location.wards.find(ward => ward.code === confirmValues.ward)?.name} - ${location.districts.find(district => district.code === confirmValues.district)?.name} - ${location.cities.find(city => city.code === confirmValues.city)?.name}`;
       const paided = dataPayment ? dataPayment?.purchase_units[0]?.amount.value : 0;
 
@@ -262,21 +267,20 @@ function CheckoutPage() {
         totalAmount: totalPrice,
         dataPayment,
       };
-  
+
       const formData = {
         modelName: "orders",
         data
       };
-      
+
       const { dataObject } = await apiCreate(formData);
 
       const userData = {
         modelName: "customers",
         id: userInfo?.data?.data?._id,
-        data: {carts: []},
+        data: { carts: [] },
       }
       await apiUpdate(userData);
-      console.log("🚀 ~ paypalCreatOrder ~ dataObject:", dataObject)
     } catch (error) {
       notification.error({
         message: "Không thể tạo đơn hàng",

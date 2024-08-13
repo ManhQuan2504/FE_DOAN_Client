@@ -24,7 +24,6 @@ function* getCategoryListSaga(action) {
         data: dataCategory,
       },
     });
-    console.log("🚀 ~ function*getCategoryListSaga ~ dataCategory:", dataCategory)
 
   } catch (e) {
     yield put({

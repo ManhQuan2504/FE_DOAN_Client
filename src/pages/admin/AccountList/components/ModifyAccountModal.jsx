@@ -25,7 +25,6 @@ function ModifyAccountModal({
   setUploadImage
 }) {
   const [modifyAccountForm] = Form.useForm();
-  console.log("🚀 ~ file: ModifyAccountModal.jsx ~ line 25 ~ uploadImages", modifyUserData)
   const [uploadError, setUploadError] = useState('');
   const { Option } = Select;
   const { userInfo } = useSelector((state) => state.userReducer);

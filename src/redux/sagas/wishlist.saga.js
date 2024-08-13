@@ -6,18 +6,17 @@ import { SERVER_API_URL } from "./apiUrl";
 
 function* addToWishlistSaga(action) {
   try {
-    const { userId, data } = action.payload;
-    const result = yield axios({
-      method: "PATCH",
-      url: `${SERVER_API_URL}/users/${userId}`,
-      data: {
-        wishlist: data,
-      },
-    });
+    const { userId, wishList } = action.payload;
+    const data = {
+      modelName: "customers",
+      data: { wishList: wishList },
+    };
+    yield axios.put(`${SERVER_API_URL}/v1/customers/${userId}`, data);
+    const result = yield axios.get(`${SERVER_API_URL}/v1/customers/${userId}?modelName=customers`);
     yield put({
       type: SUCCESS(WISHLIST_ACTION.ADD_TO_WISHLIST),
       payload: {
-        data: result.data.wishlist,
+        data: result?.data?.dataObject?.wishList,
       },
     });
     yield notification.success({
@@ -33,8 +32,12 @@ function* addToWishlistSaga(action) {
 
 function* deleteWishlistItemSaga(action) {
   try {
-    const { userId, data } = action.payload;
-    yield axios.patch(`${SERVER_API_URL}/users/${userId}`, data);
+    const { userId, wishList = [] } = action.payload;
+    const data = {
+      modelName: "customers",
+      data: { wishList: wishList },
+    };
+    yield axios.put(`${SERVER_API_URL}/v1/customers/${userId}`, data);
     yield put({
       type: SUCCESS(WISHLIST_ACTION.DELETE_WISHLIST_ITEM),
       payload: {
@@ -51,8 +54,5 @@ function* deleteWishlistItemSaga(action) {
 
 export default function* wishlistSaga() {
   yield takeEvery(REQUEST(WISHLIST_ACTION.ADD_TO_WISHLIST), addToWishlistSaga);
-  yield takeEvery(
-    REQUEST(WISHLIST_ACTION.DELETE_WISHLIST_ITEM),
-    deleteWishlistItemSaga
-  );
+  yield takeEvery(REQUEST(WISHLIST_ACTION.DELETE_WISHLIST_ITEM), deleteWishlistItemSaga);
 }

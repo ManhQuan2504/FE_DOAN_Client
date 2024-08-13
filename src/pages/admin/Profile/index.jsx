@@ -22,18 +22,15 @@ import { TITLE } from "../../../constants/title";
 function ProfileAdminPage() {
   document.title = TITLE.USER_PROFILE;
   const { userInfo } = useSelector((state) => state.userReducer);
-  console.log("🚀 ~ ProfileAdminPage ~ userInfo:", userInfo)
   const { responseAction } = useSelector((state) => state.userReducer);
   const { page } = useParams();
   const dispatch = useDispatch();
 
   const [avatar, setAvatar] = useState("");
-  console.log("🚀 ~ ProfileAdminPage ~ avatar:", avatar)
   const [visible, setVisible] = useState(false);
   const [activeMenu, setActiveMenu] = useState({
     menuItem: "user-info",
   });
-console.log(1232);
 
   const handleMenuItemClick = ({ key }) => {
     setActiveMenu({

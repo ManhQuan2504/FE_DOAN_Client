@@ -32,12 +32,16 @@ function Wishlist() {
           <Card
             style={{ cursor: "pointer" }}
             size="small"
-            cover={<img alt="example" src={wishItem.image} />}
+            cover={<img alt="example" style={{
+              width: "100%",  // Ensure the image fills the card's width
+              height: "180px", // Set a fixed height for the image
+              objectFit: "cover" // Maintain the image aspect ratio by covering the entire area
+            }} src={wishItem.image.absoluteUrl} />}
             onClick={() =>
-              history.push(`/product/${wishItem.name}-${wishItem.productId}`)
+              history.push(`/product/${wishItem.productName}-${wishItem.productId}`)
             }
           >
-            <Meta title={wishItem.name} description={wishItem.category} />
+            <Meta title={wishItem.productName} description={wishItem.brand.categoryName} />
           </Card>
         </Col>
       );

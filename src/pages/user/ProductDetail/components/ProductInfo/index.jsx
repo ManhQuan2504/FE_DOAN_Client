@@ -75,7 +75,7 @@ function ProductInfo({
   };
 
   function handleAddToWishlist() {
-    if (!userInfo.data.name) {
+    if (!userInfo?.data?.data?.customerName) {
       const key = `open${Date.now()}`;
       return notification.warning({
         message: "Chưa đăng nhập",
@@ -94,17 +94,16 @@ function ProductInfo({
         ),
       });
     }
-    const existProductIndex = wishList.data?.findIndex(
+    const existProductIndex = wishList.data?.some(
       (item) => item.productId === productID
     );
-    if (existProductIndex !== -1) {
+    if (existProductIndex) {
       // Xoá yêu thích
-      const newWishlistData = [...wishList.data];
-      newWishlistData.splice(existProductIndex, 1);
+      const newWishlistData = wishList.data.filter(w => w.productId !== productID);
       dispatch(
         deleteWishlistItemAction({
-          userId: userInfo.data.id,
-          data: { wishlist: newWishlistData },
+          userId: userInfo?.data?.data?._id,
+          wishList: newWishlistData,
         })
       );
       // notification.success({
@@ -113,18 +112,27 @@ function ProductInfo({
     } else {
       dispatch(
         addToWishlistAction({
-          userId: userInfo.data.id,
-          data: [
+          userId: userInfo?.data?.data?._id,
+          wishList: [
             ...wishList.data,
             {
-              productId: productID,
-              name: productDetail.data.name,
-              price: productDetail.data.price,
-              color: productDetail.data.color,
-              image: productDetail.data.images[0],
-              category: productDetail.data.category.name,
-              type: productDetail.data.type.name,
-              department: productDetail.data.department.description,
+              productId: productDetail?.data?._id,
+              productCode: productDetail?.data?.productCode,
+              productName: productDetail?.data?.productName,
+              count: productCount,
+              price: productDetail?.data?.price,
+              color: productDetail?.data?.color,
+              image: productDetail?.data?.images[0],
+              quantity: productDetail?.data?.qty,
+              category: productDetail?.data?.category,
+              brand: productDetail?.data?.brand,
+              type: productDetail?.data?.type?.name,
+              description: productDetail?.data?.description,
+              specifications: productDetail?.data?.specifications,
+              tax: productDetail?.data?.tax,
+              warranty: productDetail?.data?.warranty,
+              uom: productDetail?.data?.uom,
+              option: {},
             },
           ],
         })
@@ -185,6 +193,7 @@ function ProductInfo({
             specifications: productDetail?.data?.specifications,
             tax: productDetail?.data?.tax,
             warranty: productDetail?.data?.warranty,
+            uom: productDetail?.data?.uom,
             option: {},
           },
         ],
@@ -544,14 +553,14 @@ Lưu ý: Nếu không có phụ kiện tương đương hoặc Khách hàng khô
                   <Button disabled>Hết hàng</Button>
                 ) : (
                   <Space wrap>
-                    <InputNumber
+                    {/* <InputNumber
                       size="large"
                       disabled={maxCount === 0 ? true : false}
                       min={1}
                       max={maxCount}
                       onChange={(value) => setProductCount(value)}
                       value={productCount}
-                    />
+                    /> */}
                     <Button
                       size="large"
                       disabled={maxCount === 0 ? true : false}

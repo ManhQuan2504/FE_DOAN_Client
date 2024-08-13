@@ -303,7 +303,6 @@ function ModifyProduct({ action, match }) {
     });
   }
   function renderOptionColor() {
-    // console.log("🚀 ~ file: index.jsx ~ line 287 ~ renderOptionColor ~ value", value);
     return COLOR_MENU.map((colorItem, colorIndex) => {
       return (
         <Style.CustomRadio value={colorItem.code}>

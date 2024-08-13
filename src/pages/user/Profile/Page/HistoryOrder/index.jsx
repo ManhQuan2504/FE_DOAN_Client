@@ -11,7 +11,6 @@ const { Title } = Typography;
 function HistoryOrder() {
   document.title = TITLE.HISTORY_ORDER;
   const { orderList } = useSelector((state) => state.orderReducer);
-  console.log("🚀 ~ HistoryOrder ~ orderList:", orderList);
 
   const columns = [
     {
@@ -72,7 +71,6 @@ function HistoryOrder() {
   // Chỉnh sửa để phù hợp với cấu trúc dữ liệu
   const data = orderList?.data?.length
     ? orderList.data.map((orderItem, orderIndex) => {
-        console.log("🚀 ~ orderItem:", orderItem);
         return {
           key: orderIndex,
           customerName: orderItem.customer.customerName, // Lấy tên khách hàng
@@ -100,8 +98,6 @@ function HistoryOrder() {
         };
       })
     : [];
-
-  console.log("🚀 ~ HistoryOrder ~ data:", data);
 
   return (
     <Style.HistoryOrder>

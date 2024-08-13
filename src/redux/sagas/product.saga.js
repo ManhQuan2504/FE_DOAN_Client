@@ -6,12 +6,10 @@ import { SERVER_API_URL } from "./apiUrl";
 import { PRODUCT_LIMIT } from "../../constants/product";
 
 function* getProductListSaga(action) {
-  console.log("🚀 ~ function*getProductListSaga ~ action:", action)
   try {
     const page = action.payload?.page;
     const sortValue = action.payload?.sortValue;
     const categoriesSelected = action.payload?.categoriesSelected;
-    console.log("🚀 ~ function*getProductListSaga ~ categoriesSelected:", categoriesSelected)
     const typesSelected = action.payload?.typesSelected;
     const departmentsSelected = action.payload?.departmentsSelected;
     const priceRange = action.payload?.priceRange;
@@ -88,7 +86,6 @@ function* getProductListSaga(action) {
     //     url = url + `?${colorParams}`;
     //   }
     // }
-    console.log("🚀 ~ f@@@@@@@@@@unction*getProductListSaga ~ url:", url)
 
     const result = yield axios({
       method: "GET",

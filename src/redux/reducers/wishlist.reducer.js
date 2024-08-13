@@ -16,7 +16,6 @@ const wishlistReducer = createReducer(initialState, {
       ...state,
       wishList: {
         ...state.wishList,
-        data: data.wishlist,
       },
     };
   },
@@ -27,7 +26,7 @@ const wishlistReducer = createReducer(initialState, {
       ...state,
       wishList: {
         ...state.wishList,
-        data: data.wishlist,
+        data: data?.dataObject?.wishList,
       },
     };
   },
@@ -49,7 +48,7 @@ const wishlistReducer = createReducer(initialState, {
       ...state,
       wishList: {
         ...state.wishList,
-        data: data.wishlist,
+        data: data?.data?.wishList,
       },
     };
   },

@@ -34,8 +34,6 @@ export const apiGetList2 = async (data) => {
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(byFieldObject))}`)
     .join('&');
 
-  console.log(`🚀 ~ apiGetList ~ queryString: ${queryString}`);
-
   try {
     const res = await axios.get(`http://localhost/v1/${modelName}?modelName=${modelName}&${queryString}`);
     return res.data;
@@ -63,8 +61,6 @@ export const apiGetById = async (data) => {
 
 export const apiCreate = async (formData) => {
   const { modelName } = formData;
-  console.log("🚀 ~ apiCreate ~ formData:", formData)
-
   try {
     const res = await axios.post(`http://localhost/v1/${modelName}`, formData);
     return res.data;

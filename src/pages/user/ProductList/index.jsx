@@ -26,7 +26,6 @@ function ProductPage() {
   const { productList } = useSelector((state) => state.productReducer);
   const { categoryList } = useSelector((state) => state.categoryReducer);
   const { typeList } = useSelector((state) => state.typeReducer);
-  console.log("🚀 ~ ProductPage ~ typeList:", typeList)
   const { departmentList } = useSelector((state) => state.departmentReducer);
   const [categoriesSelected, setCategoriesSelect] = useState('');
   const [sortValue, setSortValue] = useState("");
