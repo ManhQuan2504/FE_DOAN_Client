@@ -37,12 +37,16 @@ function* addToCartSaga(action) {
 
 function* plusItemCountSaga(action) {
   try {
-    const { userId, data } = action.payload;
-    yield axios.patch(`${SERVER_API_URL}/users/${userId}`, data);
+    const { userId, carts } = action.payload;
+    const data = {
+      modelName: "customers",
+      data: {carts: carts},
+    };
+    yield axios.put(`${SERVER_API_URL}/v1/customers/${userId}`, data);
     yield put({
       type: SUCCESS(CART_ACTION.PLUS_ITEM_COUNT),
       payload: {
-        data,
+        data: carts,
       },
     });
   } catch (e) {
@@ -72,12 +76,16 @@ function* totalInfoOrderSaga(action) {
 
 function* minusItemCountSaga(action) {
   try {
-    const { userId, data } = action.payload;
-    yield axios.patch(`${SERVER_API_URL}/users/${userId}`, data);
+    const { userId, carts } = action.payload;
+    const data = {
+      modelName: "customers",
+      data: {carts: carts},
+    };
+    yield axios.put(`${SERVER_API_URL}/v1/customers/${userId}`, data);
     yield put({
       type: SUCCESS(CART_ACTION.MINUS_ITEM_COUNT),
       payload: {
-        data,
+        data: carts,
       },
     });
   } catch (e) {

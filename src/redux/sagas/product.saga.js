@@ -42,13 +42,16 @@ function* getProductListSaga(action) {
     //   });
     // }
 
-    // let typeParams = "";
-    // if (typesSelected) {
-    //   typesSelected.forEach((typeId, typeIndex) => {
-    //     const andParams = typeIndex < typesSelected.length - 1 ? "&" : "";
-    //     typeParams = typeParams + `typeId=${typeId}${andParams}`;
-    //   });
-    // }
+    let typeParams = "";
+    if (Array.isArray(typesSelected)) {
+      typesSelected.forEach((typeId, categoryIndex) => {
+        const andParams = categoryIndex < typesSelected.length - 1 ? "&" : "";
+        typeParams = typeParams + `"brand":"${typeId}${andParams}"`;
+      });
+    } else if (typesSelected) {
+      typeParams = `"brand":"${typesSelected}"`;
+    }
+    console.log("🚀 ~ function*getProductListSaga ~ typeParams:", typeParams)
 
     // let colorParams = "";
     // if (colorSelected) {
@@ -59,53 +62,66 @@ function* getProductListSaga(action) {
     // }
 
     let url = `${SERVER_API_URL}/v1/products?modelName=products`;
-    url = categoriesSelected?.length > 0 ? url + `&byField={${categoryParams}}` : url;
-    // if (typesSelected?.length > 0) {
-    //   if (categoriesSelected?.length > 0) {
-    //     url = url + `&${typeParams}`;
-    //   } else {
-    //     url = url + `?${typeParams}`;
-    //   }
-    // }
-    // if (departmentsSelected?.length > 0) {
-    //   if (categoriesSelected?.length > 0 || typesSelected?.length > 0) {
-    //     url = url + `&${departmentParams}`;
-    //   } else {
-    //     url = url + `?${departmentParams}`;
-    //   }
-    // }
+    if (categoriesSelected?.length && typesSelected?.length) {
+      url = url + `&byField={${categoryParams}, ${typeParams}}`;
+    } else if (categoriesSelected?.length) {
+      url = url + `&byField={${categoryParams}}`
+    } else if (typesSelected?.length) {
+      url = url + `&byField={${typeParams}}`
+    }
 
-    // if (colorSelected?.length > 0) {
-    //   if (
-    //     categoriesSelected?.length > 0 ||
-    //     typesSelected?.length > 0 ||
-    //     departmentsSelected?.length > 0
-    //   ) {
-    //     url = url + `&${colorParams}`;
-    //   } else {
-    //     url = url + `?${colorParams}`;
-    //   }
-    // }
+    if(searchKey && searchKey !== '') {
+      url = url + `&keySearch=${searchKey}`
+    }
+      // url = categoriesSelected?.length > 0 ? url + `&byField={${categoryParams}}` : url;
+      // url = t?.length > 0 ? url + `&byField={${categoryParams}}` : url;
 
-    const result = yield axios({
-      method: "GET",
-      url,
-      params: {
-        _sort: sortObj?._sort || "id",
-        _order: sortObj?._order || "desc",
-        _expand: ["department", "category", "type"],
-        _embed: ["comments", "productOptions"],
-        ...(page && {
-          _page: page,
-          _limit: PRODUCT_LIMIT,
-        }),
-        ...(priceRange && {
-          price_gte: priceRange[0],
-          price_lte: priceRange[1],
-        }),
-        ...(searchKey && { q: searchKey }),
-      },
-    });
+      // if (typesSelected?.length > 0) {
+      //   if (categoriesSelected?.length > 0) {
+      //     url = url + `&${typeParams}`;
+      //   } else {
+      //     url = url + `?${typeParams}`;
+      //   }
+      // }
+      // if (departmentsSelected?.length > 0) {
+      //   if (categoriesSelected?.length > 0 || typesSelected?.length > 0) {
+      //     url = url + `&${departmentParams}`;
+      //   } else {
+      //     url = url + `?${departmentParams}`;
+      //   }
+      // }
+
+      // if (colorSelected?.length > 0) {
+      //   if (
+      //     categoriesSelected?.length > 0 ||
+      //     typesSelected?.length > 0 ||
+      //     departmentsSelected?.length > 0
+      //   ) {
+      //     url = url + `&${colorParams}`;
+      //   } else {
+      //     url = url + `?${colorParams}`;
+      //   }
+      // }
+
+      const result = yield axios({
+        method: "GET",
+        url,
+        params: {
+          _sort: sortObj?._sort || "id",
+          _order: sortObj?._order || "desc",
+          _expand: ["department", "category", "type"],
+          _embed: ["comments", "productOptions"],
+          ...(page && {
+            _page: page,
+            _limit: PRODUCT_LIMIT,
+          }),
+          ...(priceRange && {
+            price_gte: priceRange[0],
+            price_lte: priceRange[1],
+          }),
+          ...(searchKey && { q: searchKey }),
+        },
+      });
 
     yield put({
       type: SUCCESS(PRODUCT_ACTION.GET_PRODUCT_LIST),
@@ -180,13 +196,13 @@ function* getCommentDetailListSaga(action) {
       result.data.length === 0
         ? 0
         : Math.round(
-            (result.data.reduce(
-              (result, comment) => (result += comment.rating),
-              0
-            ) /
-              result.data.length) *
-              2
-          ) / 2;
+          (result.data.reduce(
+            (result, comment) => (result += comment.rating),
+            0
+          ) /
+            result.data.length) *
+          2
+        ) / 2;
 
     yield put({
       type: SUCCESS(PRODUCT_ACTION.GET_COMMENT_DETAIL_LIST),

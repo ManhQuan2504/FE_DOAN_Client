@@ -56,8 +56,8 @@ function CartPage() {
     });
     dispatch(
       plusItemCountAction({
-        userId: userInfo.data.id,
-        data: { carts: newCartData },
+        userId: userInfo?.data?.data?._id,
+        carts: newCartData,
       })
     );
   }
@@ -74,8 +74,8 @@ function CartPage() {
     });
     dispatch(
       minusItemCountAction({
-        userId: userInfo.data.id,
-        data: { carts: newCartData },
+        userId: userInfo?.data?.data?._id,
+        carts: newCartData,
       })
     );
   }
@@ -86,7 +86,7 @@ function CartPage() {
     newCartData.splice(index, 1);
     dispatch(
       deleteCartItemAction({
-        userId: userInfo.data.id,
+        userId: userInfo?.data?.data?._id,
         data: { carts: newCartData },
       })
     );

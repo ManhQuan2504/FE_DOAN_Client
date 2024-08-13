@@ -72,13 +72,15 @@ function FilterProduct({
       value: typeItem._id,
     }));
     return (
-      <Checkbox.Group
+      <Radio.Group
         options={typeCheckbox}
-        onChange={(value) => handleFilterType(value)}
+        onChange={(e) => handleFilterType(e.target.value)}
         value={typesSelected}
+        style={{ display: 'flex', flexDirection: 'column' }}
       />
     );
   }
+  
 
   // function renderSizeCheckbox() {
   //   const sizeCheckbox = SIZE_LIST.map((sizeItem) => ({

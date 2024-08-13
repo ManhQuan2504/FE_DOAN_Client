@@ -29,7 +29,7 @@ function ProductPage() {
   const { departmentList } = useSelector((state) => state.departmentReducer);
   const [categoriesSelected, setCategoriesSelect] = useState('');
   const [sortValue, setSortValue] = useState("");
-  const [typesSelected, setTypesSelect] = useState([]);
+  const [typesSelected, setTypesSelect] = useState('');
   const [departmentsSelected, setDepartmentsSelect] = useState([]);
   const [sizeSelected, setSizeSelect] = useState([]);
   const [colorSelected, setColorSelect] = useState([]);
@@ -72,6 +72,7 @@ function ProductPage() {
   }, [history.location.pathname]);
 
   function handleFilterCategory(value) {
+    // setTypesSelect('');
     setCategoriesSelect(value);
     dispatch(
       getProductListAction({
@@ -88,6 +89,7 @@ function ProductPage() {
   }
 
   function handleFilterType(value) {
+    // setCategoriesSelect('');
     setTypesSelect(value);
     dispatch(
       getProductListAction({

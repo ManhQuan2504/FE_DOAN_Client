@@ -28,7 +28,7 @@ function TagList({
     if (
       categoriesSelected === "" &&
       colorSelected.length === 0 &&
-      typesSelected.length === 0 &&
+      typesSelected.length === "" &&
       (departmentsSelected.length === 0 ||
         (departmentsSelected.length > 0 &&
           history.location.pathname !== "/product")) &&
@@ -62,39 +62,31 @@ function TagList({
             {categoryList.data.find(categoryItem => categoryItem.id === categoriesSelected).name}
           </Tag>
         )}
-        {typesSelected.length > 0 &&
-          typesSelected.map((typeSelectedItem, typeSelectedIndex) => {
-            const typeSelectedData = typeList.data.find(
-              (typeItem) => typeItem.id === typeSelectedItem
-            );
-            if (!typeSelectedData) return null; // Kiểm tra nếu typeSelectedData tồn tại
-            return (
-              <Tag
-                color="#1790c8"
-                key={`type-${typeSelectedIndex}`}
-                closable
-                onClose={(e) => {
-                  e.preventDefault();
-                  const newTypesSelect = [...typesSelected];
-                  newTypesSelect.splice(typeSelectedIndex, 1);
-                  setTypesSelect(newTypesSelect);
-                  dispatch(
-                    getProductListAction({
-                      page: 1,
-                      categoriesSelected,
-                      typesSelected: newTypesSelect,
-                      priceRange,
-                      departmentsSelected,
-                      searchKey: searchKey,
-                      colorSelected,
-                    })
-                  );
-                }}
-              >
-                {typeSelectedData.name}
-              </Tag>
-            );
-          })}
+
+        {typesSelected && typeList.data.find(typeItem => typeItem.id === typesSelected) && (
+          <Tag
+            color="#1790c8"
+            closable
+            onClose={(e) => {
+              e.preventDefault();
+              setTypesSelect('');
+              dispatch(
+                getProductListAction({
+                  page: 1,
+                  categoriesSelected,
+                  typesSelected: '',
+                  priceRange,
+                  departmentsSelected,
+                  searchKey,
+                  colorSelected,
+                })
+              );
+            }}
+          >
+            {typeList.data.find(typeItem => typeItem.id === typesSelected).name}
+          </Tag>
+        )}
+
         {departmentsSelected.length > 0 &&
           history.location.pathname === "/product" &&
           departmentsSelected.map(
@@ -193,36 +185,36 @@ function TagList({
           typesSelected.length > 0 ||
           colorSelected.length > 0 ||
           categoriesSelected) && (
-          <Tag
-            closable
-            color="#ff324d"
-            onClose={() => {
-              setPriceRange([0, 15000000]);
-              setCategoriesSelect('');
-              setTypesSelect([]);
-              setColorSelect([]);
-              if (history.location.pathname === "/product") {
-                // setDepartmentsSelect([]);
-              }
-              dispatch(
-                getProductListAction({
-                  page: 1,
-                  categoriesSelected: '',
-                  typesSelected: [],
-                  departmentsSelected:
-                    history.location.pathname === "/product"
-                      ? []
-                      : departmentsSelected,
-                  priceRange: [0, 15000000],
-                  searchKey,
-                  colorSelected: [],
-                })
-              );
-            }}
-          >
-            Xoá tất cả
-          </Tag>
-        )}
+            <Tag
+              closable
+              color="#ff324d"
+              onClose={() => {
+                setPriceRange([0, 15000000]);
+                setCategoriesSelect('');
+                setTypesSelect([]);
+                setColorSelect([]);
+                if (history.location.pathname === "/product") {
+                  // setDepartmentsSelect([]);
+                }
+                dispatch(
+                  getProductListAction({
+                    page: 1,
+                    categoriesSelected: '',
+                    typesSelected: [],
+                    departmentsSelected:
+                      history.location.pathname === "/product"
+                        ? []
+                        : departmentsSelected,
+                    priceRange: [0, 15000000],
+                    searchKey,
+                    colorSelected: [],
+                  })
+                );
+              }}
+            >
+              Xoá tất cả
+            </Tag>
+          )}
       </Space>
     );
   }
