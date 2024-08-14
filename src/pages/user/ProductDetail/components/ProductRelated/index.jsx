@@ -4,6 +4,7 @@ import CardProduct from "../../../../../components/Card";
 import * as Style from "./style";
 
 function ProductRelated({ productList }) {
+  console.log("🚀 ~ ProductRelated ~ productList:", productList)
   return (
     <Style.ProductRelated>
       <Row gutter={[15, 20]}>
@@ -25,7 +26,7 @@ function ProductRelated({ productList }) {
                 className="col-custom"
               >
                 <CardProduct
-                  path={`/product/${productItem.name}-${productItem.id}`}
+                  path={`/product/${productItem.productName}-${productItem._id}`}
                   product={productItem}
                 ></CardProduct>
               </Col>

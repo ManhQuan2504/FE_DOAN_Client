@@ -493,10 +493,12 @@ Lưu ý: Nếu không có phụ kiện tương đương hoặc Khách hàng khô
                   className="rate"
                   disabled
                   allowHalf
-                  value={commentList?.rate}
+                  value={4.5}
+                  // value={commentList?.rate}
                 />
                 <span className="number-rate">
-                  {commentList?.data?.length} Khách hàng đánh giá
+                  {15} Khách hàng đánh giá
+                  {/* {commentList?.data?.length} Khách hàng đánh giá */}
                 </span>
               </div>
               <div className="product-price">
@@ -678,7 +680,8 @@ Lưu ý: Nếu không có phụ kiện tương đương hoặc Khách hàng khô
                 )}
                 <List
                   className="comment-list"
-                  header={`${commentList.data?.length} đánh giá`}
+                  header={`15 đánh giá`}
+                  // header={`${commentList.data?.length} đánh giá`}
                   itemLayout="horizontal"
                 >
                   {renderCommentList()}

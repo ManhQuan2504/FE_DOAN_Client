@@ -47,19 +47,19 @@ function HomePage() {
   }, []);
   console.log("🚀 ~ HomePage ~ productList:", productList)
 
-  const shoesMenList = {
+  const MAY_GIAT_List = {
     data: productList.data?.filter(
-      (productItem) => productItem?.department?.name === "Máy giặt"
+      (productItem) => productItem?.category?.categoryCode === "MAY_GIAT"
     ),
   };
-  const shoesWomenList = {
+  const TU_LANH_List = {
     data: productList.data?.filter(
-      (productItem) => productItem?.department?.name === "Tủ lạnh"
+      (productItem) => productItem?.category?.categoryCode === "TU_LANH"
     ),
   };
-  const shoesKidsList = {
+  const DIEU_HOA_List = {
     data: productList.data?.filter(
-      (productItem) => productItem?.department?.name === "Điều hoà"
+      (productItem) => productItem?.category?.categoryCode === "DIEU_HOA"
     ),
   };
 
@@ -78,8 +78,8 @@ function HomePage() {
           {/* category */}
           <CategoryHome />
           {/* Giày nam */}
-          <SectionHome title="Điều hoà" text="xem thêm" params="/product/men">
-            <ProductSlider productList={shoesMenList} />
+          <SectionHome title="Điều hoà" text="xem thêm" params="/product/DIEU_HOA">
+            <ProductSlider productList={DIEU_HOA_List} />
           </SectionHome>
           {/* Form đăng ký nhận thông báo */}
           <RegisterForm
@@ -88,16 +88,16 @@ function HomePage() {
             text=" Đăng ký nhận bản tin của LanChiShop để cập nhật những sản phẩm mới, nhận thông tin ưu đãi đặc biệt và thông tin giảm giá khác."
           />
           {/* Giày nữ */}
-          <SectionHome title="Tủ lạnh" text="xem thêm" params="/product/woman">
-            <ProductSlider productList={shoesWomenList} />
+          <SectionHome title="Tủ lạnh" text="xem thêm" params="/product/TU_LANH">
+            <ProductSlider productList={TU_LANH_List} />
           </SectionHome>
           {/* Giày trẻ em */}
           <SectionHome
             title="Máy giặt"
             text="xem thêm"
-            params="/product/kids"
+            params="/product/MAY_GIAT"
           >
-            <ProductSlider productList={shoesKidsList} />
+            <ProductSlider productList={MAY_GIAT_List} />
           </SectionHome>
           {/* Bài viết */}
           <SectionHome title="Bài viết mới nhất" text="xem thêm" params="/blog">

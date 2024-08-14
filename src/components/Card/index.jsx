@@ -23,7 +23,8 @@ function CardProduct({ product, path }) {
           <h3 onClick={() => history.push(path)}>{product.productName}</h3>
           <strong>{product?.price?.toLocaleString()}₫</strong>
           <div align="center" className="card-info">
-            <Rate className="star" allowHalf disabled value={product.rate} />
+            <Rate className="star" allowHalf disabled value={4.5} />
+            {/* <Rate className="star" allowHalf disabled value={product.rate} /> */}
             <span className="quantity">
               {product.qty === 0
                 ? "đã hết"

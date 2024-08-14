@@ -14,19 +14,19 @@ function CategoryHome() {
       image: categoryDieuhoa,
       tag: "Bộ sưu tập",
       category: "Điều hoà",
-      path: "/product/men",
+      path: "/product/DIEU_HOA",
     },
     {
       image: categoryTulanh,
       tag: "Bộ sưu tập",
       category: "Tủ lạnh",
-      path: "/product/woman",
+      path: "/product/TU_LANH",
     },
     {
       image: categoryMaygiat,
       tag: "Bộ sưu tập",
       category: "Máy giặt",
-      path: "/product/kids",
+      path: "/product/MAY_GIAT",
     },
   ];
 
