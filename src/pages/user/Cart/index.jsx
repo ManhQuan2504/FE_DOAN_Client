@@ -87,7 +87,7 @@ function CartPage() {
     dispatch(
       deleteCartItemAction({
         userId: userInfo?.data?.data?._id,
-        data: { carts: newCartData },
+        carts: newCartData,
       })
     );
   }

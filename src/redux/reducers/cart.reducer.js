@@ -87,7 +87,7 @@ const cartReducer = createReducer(initialState, {
       ...state,
       cartList: {
         ...state.cartList,
-        data: data?.dataObject?.carts,
+        data,
       },
     };
   },

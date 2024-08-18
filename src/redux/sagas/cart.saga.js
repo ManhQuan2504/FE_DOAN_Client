@@ -98,12 +98,16 @@ function* minusItemCountSaga(action) {
 
 function* deleteCartItemSaga(action) {
   try {
-    const { userId, data } = action.payload;
-    yield axios.patch(`${SERVER_API_URL}/users/${userId}`, data);
+    const { userId, carts } = action.payload;
+    const data = {
+      modelName: "customers",
+      data: {carts: carts},
+    };
+    yield axios.put(`${SERVER_API_URL}/v1/customers/${userId}`, data);
     yield put({
       type: SUCCESS(CART_ACTION.DELETE_CART_ITEM),
       payload: {
-        data,
+        data: carts,
       },
     });
   } catch (e) {
