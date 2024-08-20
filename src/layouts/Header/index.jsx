@@ -108,10 +108,10 @@ function Header({ type }) {
       title: "Máy giặt",
       path: "/product/MAY_GIAT",
     },
-    {
-      title: "Bài viết",
-      path: "/blog",
-    },
+    // {
+    //   title: "Bài viết",
+    //   path: "/blog",
+    // },
     {
       title: "Liên hệ",
       path: "/contact",

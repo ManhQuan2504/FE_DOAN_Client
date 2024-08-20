@@ -47,7 +47,13 @@ function HistoryOrder() {
       key: "checkoutInfo",
       render: (value) => {
         const displayValue = value || 'Chưa xác định'; // Cung cấp giá trị mặc định nếu value là undefined
-        return displayValue === "paypal" ? "Đã thanh toán (paypal)" : displayValue.toUpperCase();
+        if (displayValue === "paypal") {
+          return "Đã thanh toán (paypal)";
+        } else if (displayValue === "cod") {
+          return "Thanh toán khi nhận hàng";
+        } else {
+          return displayValue.toUpperCase();
+        }
       },
     },
     {
@@ -55,12 +61,12 @@ function HistoryOrder() {
       dataIndex: "status",
       key: "status",
       render: (value) => {
-        return value === "waiting" ? (
-          <Badge status="processing" text={"Đang chờ"} />
-        ) : value === "confirm" ? (
-          <Badge color={"purple"} text={"Xác nhận"} />
-        ) : value === "shipping" ? (
-          <Badge status="warning" text={"Đang chuyển hàng"} />
+        return value === "Chờ phê duyệt" ? (
+          <Badge status="processing" text={"Chờ phê duyệt"} />
+        ) : value === "Chờ giao hàng" ? (
+          <Badge color={"purple"} text={"Chờ giao hàng"} />
+        ) : value === "Đã từ chối" ? (
+          <Badge status="warning" text={"Đã từ chối"} />
         ) : (
           <Badge status="success" text={"Đã giao"} />
         );
@@ -71,32 +77,32 @@ function HistoryOrder() {
   // Chỉnh sửa để phù hợp với cấu trúc dữ liệu
   const data = orderList?.data?.length
     ? orderList.data.map((orderItem, orderIndex) => {
-        return {
-          key: orderIndex,
-          customerName: orderItem.customer.customerName, // Lấy tên khách hàng
-          address: orderItem.shipTo, // Lấy địa chỉ khách hàng
-          phoneNumber: orderItem.customer.phoneNumber, // Lấy số điện thoại khách hàng
-          totalPrice: orderItem.productList.reduce((acc, item) => acc + (item.price * item.count), 0), // Tính tổng tiền
-          checkoutInfo: orderItem.checkoutInfo || 'Chưa xác định',
-          status: orderItem.status || 'waiting', // Đảm bảo có giá trị mặc định cho trạng thái
-          description: orderItem.productList.map((product, productIndex) => (
-            <div key={productIndex}>
-              <Space size={15} wrap align="center">
-                <Image
-                  width={50}
-                  height={50}
-                  style={{ objectFit: "cover" }}
-                  preview={false}
-                  src={product.image?.absoluteUrl}
-                />
-                <span>Tên sản phẩm: {product.productName}</span>
-                {product.option?.size && <span>Size: {product.option.size}</span>}
-                <span>Số lượng: {product.count}</span>
-              </Space>
-            </div>
-          )),
-        };
-      })
+      return {
+        key: orderIndex,
+        customerName: orderItem.customer.customerName, // Lấy tên khách hàng
+        address: orderItem.shipTo, // Lấy địa chỉ khách hàng
+        phoneNumber: orderItem.customer.phoneNumber, // Lấy số điện thoại khách hàng
+        totalPrice: orderItem.productList.reduce((acc, item) => acc + (item.price * item.count), 0), // Tính tổng tiền
+        checkoutInfo: orderItem.paymentMethod || 'Chưa xác định',
+        status: orderItem.orderState || 'waiting', // Đảm bảo có giá trị mặc định cho trạng thái
+        description: orderItem.productList.map((product, productIndex) => (
+          <div key={productIndex}>
+            <Space size={15} wrap align="center">
+              <Image
+                width={50}
+                height={50}
+                style={{ objectFit: "cover" }}
+                preview={false}
+                src={product.image?.absoluteUrl}
+              />
+              <span>Tên sản phẩm: {product.productName}</span>
+              {product.option?.size && <span>Size: {product.option.size}</span>}
+              <span>Số lượng: {product.count}</span>
+            </Space>
+          </div>
+        )),
+      };
+    })
     : [];
 
   return (
