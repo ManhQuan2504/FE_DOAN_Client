@@ -119,12 +119,11 @@ function* getUserInfoSaga(action) {
       modelName: "orders",
       byField: JSON.stringify({ customer: id })  // Chuyển đối tượng thành chuỗi JSON
     };
-    // console.log("🚀 ~ function*getUserInfoSaga ~ data:", data)
 
     const orderUser = yield apiGetList2(data);
-    // console.log("🚀 ~ function*getUserInfoSaga ~ orderUser:", orderUser)
     result.data.dataObject.orderList = orderUser.dataObject;
 
+    console.log("🚀 ~ function*getUserInfoSaga ~ result:", result)
     yield put({
       type: SUCCESS(USER_ACTION.GET_USER_INFO),
       payload: {
@@ -187,12 +186,13 @@ function* editUserSaga(action) {
 
 function* editProfileSaga(action) {
   try {
-    const { id, data } = action.payload;
-    const result = yield axios.patch(`${SERVER_API_URL}/users/${id}`, data);
+    const { data } = action.payload;
+    
+    const result = yield axios.put(`${SERVER_API_URL}/v1/customers/updateCustomer/${data.id}`, data);
     yield put({
       type: SUCCESS(USER_ACTION.EDIT_USER_PROFILE),
       payload: {
-        data: result.data,
+        data: result?.data,
       },
     });
     yield notification.success({

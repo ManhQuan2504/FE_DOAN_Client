@@ -230,7 +230,7 @@ function Header({ type }) {
                       trigger={["click"]}
                     >
                       <Space align="center" style={{ cursor: "pointer" }}>
-                        <Avatar size="large" src={userInfo?.data?.data?.avatar} />
+                        <Avatar size="large" src={userInfo?.data?.data?.avatar[0].absoluteUrl} />
                       </Space>
                     </Dropdown>
                   </>

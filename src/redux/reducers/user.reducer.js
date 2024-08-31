@@ -215,6 +215,7 @@ function userReducer(state = initialState, action) {
     }
     case SUCCESS(USER_ACTION.EDIT_USER_PROFILE): {
       const { data } = action.payload;
+      const newData = data.dataObject;
       const newUserList = [...state.userList.data];
       const userIndex = newUserList.findIndex((user) => user.id === data.id);
       newUserList.splice(userIndex, 1, data);
@@ -226,7 +227,7 @@ function userReducer(state = initialState, action) {
         },
         userInfo: {
           ...state.userInfo,
-          data: data,
+          data: {data: newData},
         },
         responseAction: {
           ...state.responseAction,

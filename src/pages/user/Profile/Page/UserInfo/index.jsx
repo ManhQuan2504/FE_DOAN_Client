@@ -9,6 +9,8 @@ import {
   Row,
   Space,
   Modal,
+  message,
+  notification,
 } from "antd";
 import history from "../../../../../utils/history";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,14 +46,33 @@ function UserInfo() {
   }, [userInfo.data]);
 
   const handleChangeInfo = (values) => {
+    const data = {
+      modelName: 'customers',
+      id: userInfo?.data?.data?._id,
+      data: {},
+    };
+
+    if (values?.customerName && values.customerName.trim() !== '') {
+      data.data.customerName = values.customerName.trim();
+    }
+
+    if (values?.phoneNumber && values.phoneNumber.trim() !== '') {
+      data.data.phoneNumber = values.phoneNumber.trim();
+    }
+
+    if (values?.address && values.address.trim() !== '') {
+      data.data.address = values.address.trim();
+    }
+
+    if (Object.keys(data).length === 0) {
+      notification.error({
+        message: 'Nhập thông tin cần thay đổi',
+      });
+      return;
+    }
     dispatch(
       editUserProfileAction({
-        id: userInfo.data.id,
-        data: {
-          name: values.name,
-          gender: values.gender,
-          email: values.email,
-        },
+        data,
       })
     );
     setIsModalVisible(false);
@@ -60,8 +81,8 @@ function UserInfo() {
   const data = [
     `Tên: ${userInfo?.data?.data?.customerName}`,
     `Email: ${userInfo?.data?.data?.email}`,
-    `Giới tính: ${userInfo?.data?.data?.gender === "female" ? "Nữ" : "Nam"}`,
     `Số điện thoại: ${userInfo.data?.data?.phoneNumber}`,
+    `Địa chỉ: ${userInfo.data?.data?.address}`,
   ];
 
   return (
@@ -91,41 +112,37 @@ function UserInfo() {
           name="change-info"
           layout="vertical"
           initialValues={
-            userInfo.data
+            userInfo?.data?.data
               ? {
-                  name: userInfo.data.name,
-                  email: userInfo.data.email,
-                  gender: userInfo.data.gender,
-                }
+                customerName: userInfo.data.data.customerName,
+                phoneNumber: userInfo.data.data.phoneNumber,
+                address: userInfo.data.data.address,
+              }
               : {}
           }
           onFinish={(values) => handleChangeInfo(values)}
         >
           <Form.Item
             label="Tên"
-            name="name"
-            rules={[{ required: true, message: "Bạn chưa nhập tên!" }]}
+            name="customerName"
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Bạn chưa nhập email ahihi!" }]}
+            label="Số điện thoại"
+            name="phoneNumber"
+          // rules={[{ required: true, message: "Bạn chưa nhập email ahihi!" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Giới tính"
-            name="gender"
-            rules={[{ required: true, message: "Bạn chưa nhập giới tính!" }]}
+            label="Địa chỉ"
+            name="address"
+          // rules={[{ required: true, message: "Bạn chưa nhập email ahihi!" }]}
           >
-            <Select>
-              <Select.Option value="male">Nam</Select.Option>
-              <Select.Option value="female">Nữ</Select.Option>
-            </Select>
+            <Input />
           </Form.Item>
 
           <Button

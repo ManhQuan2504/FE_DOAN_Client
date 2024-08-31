@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Image, Row, Col, Menu, Avatar, Button, message, Space } from "antd";
+import { Image, Row, Col, Menu, Avatar, Button, message, Space, Upload } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "../../../styles/styles";
 import * as Icons from "@ant-design/icons";
@@ -16,18 +16,21 @@ import Wishlist from "./Page/WishList";
 import HistoryOrder from "./Page/HistoryOrder";
 import ChageInfo from "./Page/ChageInfo";
 import Loading from "../../../components/Loading";
-import { ImageUpload } from "../../../utils/ImageUpload";
+import { apiUpload } from "../../../helper/helperServices";
 import { TITLE } from "../../../constants/title";
 import Hero from "../../../components/Hero";
+import { UserOutlined, UploadOutlined } from '@ant-design/icons';
 
 function ProfilePage() {
   document.title = TITLE.USER_PROFILE;
+  const [userData, setUserData] = useState(null);
+  const [avatar, setAvatar] = useState([]); // Changed initial value to null
   const { userInfo } = useSelector((state) => state.userReducer);
   const { responseAction } = useSelector((state) => state.userReducer);
   const { page } = useParams();
   const dispatch = useDispatch();
 
-  const [avatar, setAvatar] = useState("");
+  const [file, setFile] = useState(null);
   const [visible, setVisible] = useState(false);
   const [activeMenu, setActiveMenu] = useState({
     menuItem: "user-info",
@@ -107,39 +110,87 @@ function ProfilePage() {
     if (responseAction.edit_user.load) {
       dispatch(getUserInfoAction());
     }
+    setAvatar(userInfo?.data?.data?.avatar)
   }, [responseAction.edit_user]);
 
-  const chageAvatar = (e) => {
-    const file = e.target.files[0];
-    if (!file) {
-      setVisible(false);
-      return message.error("Ảnh không tồn tại");
+
+  useEffect(() => {
+    if (userInfo) {
+      setAvatar(userInfo?.data?.data?.avatar);
     }
-    if (file.size > 1024 * 1024) {
-      setVisible(false);
-      return message.error("Ảnh không được nặng quá 1MB");
+  }, [userInfo]);
+
+  // const chageAvatar = (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) {
+  //     return message.error("Ảnh không tồn tại");
+  //   }
+  //   if (file.size > 1024 * 1024) {
+  //     return message.error("Ảnh không được nặng quá 1MB");
+  //   }
+  //   if (file.type !== "image/jpeg" && file.type !== "image/png") {
+  //     return message.error("Ảnh không đúng định dạng");
+  //   }
+  //   setAvatar(file); // Set the file to the state
+  // };
+
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handleAvatarChange = async ({ file }) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
     }
-    if (file.type !== "image/jpeg" && file.type !== "image/png") {
-      setVisible(false);
-      return message.error("Ảnh không đúng định dạng");
+    setFile(file.preview);
+
+    try {
+      const uploadedImage = await apiUpload([file]);
+      // userInfo.data.data.avatar = uploadedImage;
+      setAvatar(uploadedImage);
+    } catch (error) {
+      return message.error("Không thể tải ảnh lên");
     }
-    setAvatar(file);
   };
 
   const updateAvatar = async () => {
     if (avatar) {
-      const media = await ImageUpload([avatar]);
-      if (media) {
+      try {
+        const data = {
+          modelName: 'customers',
+          id: userInfo?.data?.data?._id,
+          data: {},
+        };
+
+        data.data.avatar = avatar;
+
         dispatch(
           editUserProfileAction({
-            id: userInfo.data.id,
-            data: {
-              avatar: media[0].url,
-            },
+            data,
           })
         );
-        setAvatar("");
-        setVisible(false);
+        // setAvatar(null); // Clear avatar state
+        setVisible(false); // Hide preview
+
+        // if (uploadedImage && uploadedImage.length > 0) {
+        //   dispatch(
+        //     editUserProfileAction({
+        //       id: userInfo.data.id,
+        //       data: {
+        //         avatar: uploadedImage[0].url, // Assuming `uploadedImage` is an array of URLs
+        //       },
+        //     })
+        //   );
+        //   setAvatar(null); // Clear avatar state
+        //   setVisible(false); // Hide preview
+        // }
+      } catch (error) {
+        console.error("Error updating avatar:", error);
+        message.error("Có lỗi xảy ra khi cập nhật ảnh");
       }
     }
   };
@@ -156,8 +207,11 @@ function ProfilePage() {
     ));
   }
 
-  const avatarUrl = userInfo?.data?.data?.avatar || '';
   const userName = userInfo?.data?.name || '';
+
+  if (!userInfo || !avatar) {
+    return <Loading />; // Hoặc một thành phần chờ khác
+  }
 
   return (
     <>
@@ -180,30 +234,38 @@ function ProfilePage() {
                         className="profile-image"
                         src={
                           <Image
-                            preview={false}
-                            src={avatar ? URL.createObjectURL(avatar) : avatarUrl}
+                            preview={true}
+                            src={avatar[0]?.absoluteUrl}
                           />
                         }
                       />
                       <span className="avatar-upload">
-                        <Button
-                          className="btn-upload"
-                          shape="circle"
-                          onClick={() => {
-                            inputFile.current.click();
-                            setVisible(true);
-                          }}
-                          icon={<Icons.EditOutlined />}
-                        />
-                        <input
+                        <Upload
+                          name="avatar"
+                          showUploadList={false}
+                          id="avatar"
+                          onChange={handleAvatarChange}
+                        >
+                          <Button
+                            className="btn-upload"
+                            shape="circle"
+                            onClick={() => {
+                              // inputFile.current.click();
+                              setVisible(true);
+                            }}
+                            icon={<Icons.EditOutlined />}
+                          />
+                        </Upload>
+                        {/* <input
                           ref={inputFile}
                           type="file"
                           hidden
                           id="avatar"
                           name="avatar"
                           accept="image/*"
-                          onChange={chageAvatar}
-                        />
+                          onChange={handleAvatarChange}
+                        // onChange={chageAvatar}
+                        /> */}
                       </span>
                     </div>
                     <Space
@@ -218,8 +280,8 @@ function ProfilePage() {
                       </Button>
                       <Button
                         onClick={() => {
-                          setAvatar("");
-                          setVisible(false);
+                          setAvatar(null); // Clear avatar state
+                          setVisible(false); // Hide preview
                         }}
                         icon={<Icons.CloseOutlined />}
                       >
