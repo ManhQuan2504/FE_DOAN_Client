@@ -8,6 +8,7 @@ import {
   Row,
   Space,
   Modal,
+  notification,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,6 +16,7 @@ import {
   getUserInfoAction,
 } from "../../../../../redux/actions";
 import { TITLE } from "../../../../../constants/title";
+import axios from "axios";
 
 const { Title } = Typography;
 
@@ -36,15 +38,27 @@ function ChageInfo() {
     form.resetFields();
   }, [userInfo.data]);
 
-  const handleChangeInfo = (values) => {
-    dispatch(
-      editUserProfileAction({
-        id: userInfo.data.id,
-        data: {
-          password: values.passwordNew,
-        },
-      })
-    );
+  const handleChangeInfo = async (values) => {
+    try {
+      const data = {
+        modelName: 'customers',
+        id: userInfo?.data?.data?._id,
+        data: {},
+      };
+
+      data.data.password = values.passwordOld;
+      data.data.newPassword = values.passwordNew;
+      await axios.put(`http://localhost/v1/customers/changePassword/${userInfo?.data?.data?._id}`, data);
+      notification.success({
+        message: "Mật khẩu đã được thay đổi!",
+      });
+      form.resetFields();
+    } catch (error) {
+      notification.error({
+        message: 'Không thành công, vui lòng thử lại',
+      });
+      return;
+    }
   };
 
   return (

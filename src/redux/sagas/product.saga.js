@@ -51,7 +51,6 @@ function* getProductListSaga(action) {
     } else if (typesSelected) {
       typeParams = `"brand":"${typesSelected}"`;
     }
-    console.log("🚀 ~ function*getProductListSaga ~ typeParams:", typeParams)
 
     // let colorParams = "";
     // if (colorSelected) {

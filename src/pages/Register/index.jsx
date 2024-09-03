@@ -34,8 +34,8 @@ function RegisterPage() {
       registerAction({
         data: {
           customerName: values.customerName,
-          avatar:
-            "https://res.cloudinary.com/vuongute/image/upload/v1631771352/avatar-default/avatar.jpg",
+          // avatar:
+          //   "https://res.cloudinary.com/vuongute/image/upload/v1631771352/avatar-default/avatar.jpg",
           email: values.email,
           password: values.password,
           gender: values.gender,
@@ -96,7 +96,7 @@ function RegisterPage() {
               name="password"
               rules={[
                 { required: true, message: "Bạn chưa nhập mật khẩu!" },
-                { min: 6, max: 16, message: "Mật khẩu phải từ 3-16 kí tự" },
+                { min: 6, max: 16, message: "Mật khẩu phải từ 6-16 kí tự" },
               ]}
             >
               <Input.Password />

@@ -45,8 +45,6 @@ function* loginSaga(action) {
     let errorMessage = 'Email hoặc mật khẩu không đúng!';
     const responseError = e?.response?.data?.error || "";
     if (responseError === "Email not active") {
-      errorMessage = "Vui lòng xác thực Email";
-    } else if (responseError === "Account was deleted") {
       errorMessage = "Tài khoản không khả dụng";
     }
 

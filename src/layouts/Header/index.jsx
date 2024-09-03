@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import * as Icons from "@ant-design/icons";
 import { Menu, Dropdown, Button, Space, Drawer, Badge } from "antd";
 import history from "../../utils/history";
+import { UserOutlined } from '@ant-design/icons';
 
 // import TopBar from "../../components/Topbar";
 
@@ -230,7 +231,15 @@ function Header({ type }) {
                       trigger={["click"]}
                     >
                       <Space align="center" style={{ cursor: "pointer" }}>
-                        <Avatar size="large" src={userInfo?.data?.data?.avatar[0].absoluteUrl} />
+                        {userInfo?.data?.data?.avatar?.length ?
+                          <>
+                            <Avatar size="large" src={userInfo?.data?.data?.avatar[0].absoluteUrl} />
+                          </> :
+                          <>
+                            <Avatar size={40} icon={<UserOutlined />} />
+                          </>
+                        }
+
                       </Space>
                     </Dropdown>
                   </>

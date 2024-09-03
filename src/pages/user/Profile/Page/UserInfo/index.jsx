@@ -79,10 +79,10 @@ function UserInfo() {
   };
 
   const data = [
-    `Tên: ${userInfo?.data?.data?.customerName}`,
-    `Email: ${userInfo?.data?.data?.email}`,
-    `Số điện thoại: ${userInfo.data?.data?.phoneNumber}`,
-    `Địa chỉ: ${userInfo.data?.data?.address}`,
+    `Tên: ${userInfo?.data?.data?.customerName || ""}`,
+    `Email: ${userInfo?.data?.data?.email || ""}`,
+    `Số điện thoại: ${userInfo?.data?.data?.phoneNumber || ""}`,
+    `Địa chỉ: ${userInfo.data?.data?.address || ""}`,
   ];
 
   return (
@@ -114,9 +114,9 @@ function UserInfo() {
           initialValues={
             userInfo?.data?.data
               ? {
-                customerName: userInfo.data.data.customerName,
-                phoneNumber: userInfo.data.data.phoneNumber,
-                address: userInfo.data.data.address,
+                customerName: userInfo?.data?.data?.customerName,
+                phoneNumber: userInfo?.data?.data?.phoneNumber,
+                address: userInfo?.data?.data?.address,
               }
               : {}
           }
