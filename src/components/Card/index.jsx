@@ -37,12 +37,10 @@ function CardProduct({ product, path }) {
               className="logo_brand"
               alt={product.category?.name}
             /> */}
-            {/* <span className="option">
-              {product?.productOptions?.length === 0
-                ? "size mặc định"
-                : `có ${product?.productOptions?.length} size`}
-            </span> */}
-            <span className="brand">Nhãn hiệu: {product.brand?.categoryName}</span>
+            <span className="option">
+              Đã bán: {product?.sold}
+            </span>
+            <span className="brand">Nhãn hiệu: {product?.brand?.categoryName}</span>
           </div>
         </Style.ProductContent>
       </Style.CardProduct>

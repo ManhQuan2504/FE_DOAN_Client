@@ -489,12 +489,16 @@ Lưu ý: Nếu không có phụ kiện tương đương hoặc Khách hàng khô
             <div className="product-content">
               <h3>{` ${productDetail?.data?.productName}`}</h3>
               <div className="product-rate">
+                <span className="number-rate" style={{marginRight: 20}}>
+                  Đã bán: {productDetail?.data?.sold}
+                  {/* {commentList?.data?.length} Khách hàng đánh giá */}
+                </span>
                 <Rate
                   className="rate"
                   disabled
                   allowHalf
                   value={4.5}
-                  // value={commentList?.rate}
+                // value={commentList?.rate}
                 />
                 <span className="number-rate">
                   {15} Khách hàng đánh giá
