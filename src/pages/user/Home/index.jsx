@@ -100,9 +100,9 @@ function HomePage() {
             <ProductSlider productList={MAY_GIAT_List} />
           </SectionHome>
           {/* Bài viết */}
-          <SectionHome title="Bài viết mới nhất" text="xem thêm" params="/blog">
+          {/* <SectionHome title="Bài viết mới nhất" text="xem thêm" params="/blog">
             <ArticlesHome articlesList={blogList.data} />
-          </SectionHome>
+          </SectionHome> */}
 
           {/* list ảnh giới thiệu */}
           <SectionHome

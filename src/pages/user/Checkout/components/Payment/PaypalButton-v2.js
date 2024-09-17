@@ -4,13 +4,15 @@ import { PayPalButton } from "react-paypal-button-v2";
 
 class PaypalButton extends React.Component {
   createOrder = (data, actions) => {
-    const { paypalCreatOrder, confirmValues } = this.props; // Destructure from props
+    const { paypalCreatOrder, confirmValues, total } = this.props; // Destructure from props
+    const exchangeRate = 24000;
+    let totalInUSD = (total / exchangeRate).toFixed(2);
     // Create order in your backend and return the order ID
     return actions.order.create({
       purchase_units: [{
         amount: {
           currency_code: "USD",
-          value: this.props.total.toString(),
+          value: totalInUSD,
         },
       }],
     }).then((orderID) => {

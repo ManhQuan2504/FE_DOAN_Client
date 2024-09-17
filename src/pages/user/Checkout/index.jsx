@@ -121,6 +121,12 @@ function CheckoutPage() {
       key: "price",
       render: (value) => value?.toLocaleString() + "₫",
     },
+    {
+      title: "VAT",
+      dataIndex: "tax.taxValue",
+      key: "tax.taxValue",
+      render: (text, record) => record.tax?.taxValue + "%",
+    },
     { title: "Số lượng", dataIndex: "count", key: "count" },
     {
       title: "Tổng tiền",
@@ -131,12 +137,12 @@ function CheckoutPage() {
   ];
 
   const data = cartList?.data?.map((cartItem, cartIndex) => {
-    totalPrice += cartItem.price * cartItem.count;
+    totalPrice += (cartItem.price + (cartItem.price * cartItem.tax.taxValue) / 100) * cartItem.count;
     return {
       key: cartIndex,
       ...cartItem,
       size: cartItem.option?.size || "mặc định",
-      totalPrice: cartItem.price * cartItem.count,
+      totalPrice: (cartItem.price + (cartItem.price * cartItem.tax.taxValue) / 100) * cartItem.count,
       description: (
         <div>
           <Space size={15} wrap align="center">
@@ -185,7 +191,7 @@ function CheckoutPage() {
     if (!cartList?.data) return;
 
     // Kiểm tra nếu tổng tiền lớn hơn 3,000,000
-    if (totalPrice > 300000000) {
+    if (totalPrice > 3000000) {
       notification.info({
         message: "Yêu cầu thanh toán trực tiếp",
         description: "Số tiền lớn hơn 3,000,000₫. Vui lòng sử dụng phương thức thanh toán trực tuyến khác.",
@@ -253,7 +259,7 @@ function CheckoutPage() {
       }) || [];
 
       const shipTo = `${confirmValues.address} - ${location.wards.find(ward => ward.code === confirmValues.ward)?.name} - ${location.districts.find(district => district.code === confirmValues.district)?.name} - ${location.cities.find(city => city.code === confirmValues.city)?.name}`;
-      const paided = dataPayment ? dataPayment?.purchase_units[0]?.amount.value : 0;
+      const paided = dataPayment ? totalPrice : 0;
 
       const data = {
         orderNumber: autoCode,

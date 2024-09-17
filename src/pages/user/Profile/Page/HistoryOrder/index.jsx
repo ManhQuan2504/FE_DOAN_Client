@@ -11,6 +11,7 @@ const { Title } = Typography;
 function HistoryOrder() {
   document.title = TITLE.HISTORY_ORDER;
   const { orderList } = useSelector((state) => state.orderReducer);
+  console.log("🚀 ~ HistoryOrder ~ orderList:", orderList)
 
   const columns = [
     {
@@ -82,7 +83,7 @@ function HistoryOrder() {
         customerName: orderItem.customer.customerName, // Lấy tên khách hàng
         address: orderItem.shipTo, // Lấy địa chỉ khách hàng
         phoneNumber: orderItem.customer.phoneNumber, // Lấy số điện thoại khách hàng
-        totalPrice: orderItem.productList.reduce((acc, item) => acc + (item.price * item.count), 0), // Tính tổng tiền
+        totalPrice: orderItem.productList.reduce((acc, item) => acc + ((item.price + (item.price * item.tax.taxValue) / 100) * item.count), 0), // Tính tổng tiền
         checkoutInfo: orderItem.paymentMethod || 'Chưa xác định',
         status: orderItem.orderState || 'waiting', // Đảm bảo có giá trị mặc định cho trạng thái
         description: orderItem.productList.map((product, productIndex) => (
@@ -97,7 +98,12 @@ function HistoryOrder() {
               />
               <span>Tên sản phẩm: {product.productName}</span>
               {product.option?.size && <span>Size: {product.option.size}</span>}
-              <span>Số lượng: {product.count}</span>
+              <span>Số lượng: {product.count}</span>|
+              <span>Đơn giá: {(product.price).toLocaleString()}đ</span>|
+              <span>
+                Đơn giá(sau VAT): {(product.price + (product.price * product.tax.taxValue) / 100).toLocaleString()} ₫
+              </span>
+
             </Space>
           </div>
         )),

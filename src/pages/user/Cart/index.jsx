@@ -135,7 +135,7 @@ function CartPage() {
     cartList?.data?.forEach((cartItem) => {
       totalNum = cartItem.option?.id
         ? totalNum + (cartItem.price + cartItem.option.price) * cartItem.count
-        : totalNum + cartItem.price * cartItem.count;
+        : totalNum + (cartItem.price + (cartItem.price * cartItem.tax.taxValue) / 100) * cartItem.count;
     });
     if (percent) {
       setTotal(totalNum - totalNum * percent);
@@ -151,7 +151,7 @@ function CartPage() {
         : totalCount + cartItem.count;
       totalPrice = cartItem?.option?.id
         ? totalPrice + (cartItem.price + cartItem.option.price) * cartItem.count
-        : totalPrice + cartItem.price * cartItem.count;
+        : totalPrice + (cartItem.price + (cartItem.price * cartItem.tax.taxValue) / 100) * cartItem.count;
       return (
         <Style.CartItem key={cartIndex}>
           <div className="cart-image">
@@ -164,9 +164,43 @@ function CartPage() {
                 {(
                   cartItem?.price +
                   (cartItem?.option?.id ? cartItem?.option?.price : 0)
-                ).toLocaleString() + "₫"}
+                ).toLocaleString()}₫
+                {/* {'  Thành tiền sau VAT: '}
+                {(
+                  (cartItem?.price +
+                    (cartItem?.option?.id ? cartItem?.option?.price : 0)) *
+                  (1 + cartItem?.tax?.taxValue / 100)
+                ).toLocaleString()}₫ */}
               </span>
             </div>
+
+            <div className="cart-content-box">
+              <h3></h3>
+              <span>
+                {/* {(
+                  cartItem?.price +
+                  (cartItem?.option?.id ? cartItem?.option?.price : 0)
+                ).toLocaleString()}₫ */}
+                {`VAT: ${cartItem?.tax?.taxValue}%`}
+              </span>
+            </div>
+            
+            <div className="cart-content-box">
+              <h3></h3>
+              <span>
+                {/* {(
+                  cartItem?.price +
+                  (cartItem?.option?.id ? cartItem?.option?.price : 0)
+                ).toLocaleString()}₫ */}
+                {'Thành tiền sau VAT: '}
+                {(
+                  (cartItem?.price +
+                    (cartItem?.option?.id ? cartItem?.option?.price : 0)) *
+                  (1 + cartItem?.tax?.taxValue / 100)
+                ).toLocaleString()}₫
+              </span>
+            </div>
+            
             <div className="cart-info-list">
               <div className="cart-info-item">
                 <span className="cart-info-tag">Loại sản phẩm: </span>
@@ -260,7 +294,7 @@ function CartPage() {
                         <span>Miễn phí</span>
                       </div>
                     </List.Item>
-                    <List.Item>
+                    {/* <List.Item>
                       <div className="list-item-ticket">
                         <span>Mã giảm giá</span>
                         <div>
@@ -273,7 +307,7 @@ function CartPage() {
                           </Button>
                         </div>
                       </div>
-                    </List.Item>
+                    </List.Item> */}
                     <List.Item>
                       <div className="list-item">
                         <strong>
